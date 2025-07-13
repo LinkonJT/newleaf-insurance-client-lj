@@ -11,7 +11,8 @@ const AppNavbar = () => {
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">NewLeaf </span>
       </NavbarBrand>
       <div className="flex md:order-2">
-        <Button>Login</Button>
+        
+        <NavLink to='/signin'><Button>Sign In</Button></NavLink>
         <NavbarToggle />
       </div>
       <NavbarCollapse>
