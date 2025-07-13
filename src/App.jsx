@@ -1,7 +1,7 @@
 
 import './App.css'
 import { Button } from 'flowbite-react'
-import NavbarA from './component/Navbar'
+import NavbarA from './component/Shared/AppNavbar'
 
 
 
