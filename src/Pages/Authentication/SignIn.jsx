@@ -12,23 +12,23 @@ const SignIn = () => {
           <div className="mb-2 block">
             <Label htmlFor="email1">Your email</Label>
           </div>
-          <TextInput id="email1" type="email" placeholder="name@flowbite.com" required />
+          <TextInput id="email1" type="email" name="email" placeholder="name@flowbite.com" required />
         </div>
         <div>
           <div className="mb-2 block">
             <Label htmlFor="password1">Your password</Label>
           </div>
-          <TextInput id="password1" type="password" required />
+          <TextInput id="password1" className="input" name="password" type="password" required />
         </div>
         <div className="flex items-center gap-2">
           <Checkbox id="remember" />
           <Label htmlFor="remember">Remember me</Label>
         </div>
-        <Button type="submit">Sign In</Button>
+        <Button type="submit" className='hover:text-black'>Sign In</Button>
 
           
          <div className="space-y-3">
-          <Button onClick type="button" className="btn bg-base-100 btn-outline w-full">
+          <Button onClick type="button" className="btn bg-base-100 btn-outline w-full hover:text-black">
             <FcGoogle size={24} /> Login with Google
           </Button>
           <p className="font-semibold text-center text-gray-200 gap-2">
