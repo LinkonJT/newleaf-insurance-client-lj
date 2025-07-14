@@ -1,13 +1,18 @@
 import React from 'react';
 import { Button, Card, Checkbox, Label, TextInput } from "flowbite-react";
 import { FcGoogle } from 'react-icons/fc';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation, useNavigate } from 'react-router';
+import SocialLogin from './SocialLogin';
+import { useForm } from 'react-hook-form';
+import useAuth from '../../hooks/useAuth';
 
 const SignIn = () => {
 
-
-
-
+const { register, handleSubmit, watch, formState: { errors } } = useForm();
+ const {signInUser} = useAuth()
+ const location = useLocation()
+    const navigate = useNavigate()
+    const from = location.state?.from || '/'
 
 
   
@@ -15,18 +20,44 @@ const SignIn = () => {
          <Card className="max-w-sm my-5">
           <h2 className='font-medium mx-auto text-white underline text-lg'>Sign In here</h2>
       <form className="flex flex-col gap-4">
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="email1">Your email</Label>
-          </div>
-          <TextInput id="email1" type="email" name="email" placeholder="name@flowbite.com" required />
-        </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="password1">Your password</Label>
-          </div>
-          <TextInput id="password1" className="input" name="password" type="password" required />
-        </div>
+            {/* Email */}
+               <div>
+               <Label className="mb-2 block" htmlFor="email">Your Email</Label>
+               <TextInput
+                 id="email"
+                 type="email"
+                 placeholder="name@example.com"
+                 {...register("email", { required: true })}
+               />
+               {errors.email && (
+                 <p className="text-red-500 text-sm mt-1">Email is required</p>
+               )}
+             </div>
+         {/* Password */}
+            <div>
+              <Label className="mb-2 block" htmlFor="password">Password</Label>
+              <TextInput
+        id="password"
+        type="password"
+        placeholder="At least 6 characters"
+        {...register("password", {
+          required: "Password is required",
+          minLength: {
+            value: 6,
+            message: "Password must be at least 6 characters",
+          },
+          pattern: {
+            value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+            message: "Password must include uppercase and lowercase letters",
+          },
+        })}
+      />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message || "Password is required"}
+                </p>
+              )}
+            </div>
         <div className="flex items-center gap-2">
           <Checkbox id="remember" />
           <Label htmlFor="remember">Remember me</Label>
@@ -34,17 +65,7 @@ const SignIn = () => {
         <Button type="submit" className='hover:text-black'>Sign In</Button>
 
           
-         <div className="space-y-3">
-          <Button onClick type="button" className="btn bg-base-100 btn-outline w-full hover:text-black">
-            <FcGoogle size={24} /> Login with Google
-          </Button>
-          <p className="font-semibold text-center text-gray-200 gap-2">
-            Don't Have An Account?
-            <NavLink className="text-blue-700 hover:underline ml-2" to="/signup">
-              SignUp
-            </NavLink>
-          </p>
-        </div>
+       <SocialLogin></SocialLogin>
 
       </form>
 

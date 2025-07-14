@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Card, Label, TextInput, FileInput, HelperText } from "flowbite-react";
 import { NavLink, useLocation, useNavigate } from 'react-router';
-import { FcGoogle } from 'react-icons/fc';
+
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import useAxios from '../../hooks/useAxios';
+import SocialLogin from './SocialLogin';
 
 const SignUp = () => {
 const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -157,19 +158,9 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
         {/* Submit Button */}
         <Button type="submit" className="hover:text-black">Sign Up</Button>
 
-                 <div className="space-y-3">
-                  <Button onClick type="button" className="btn bg-base-100 btn-outline w-full hover:text-black">
-                    <FcGoogle size={24} /> signUp with Google
-                  </Button>
-                  <p className="font-semibold text-center text-gray-200 gap-2">
-                    Already Have An Account?
-                    <NavLink className="text-blue-700 hover:underline ml-2" to="/signin">
-                      SignIn
-                    </NavLink>
-                  </p>
-                </div>
-     
             
+     
+            <SocialLogin></SocialLogin>
       </form>
     </Card>
   );
