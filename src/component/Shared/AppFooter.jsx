@@ -11,18 +11,21 @@ import {
   FooterTitle,
 } from "flowbite-react";
 import { BsDribbble, BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
+import logo from "../../assets/Logo_nLeaf.png"
 
 const AppFooter = () => {
     return (
     <Footer container>
       <div className="w-full">
         <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
-          <div>
+          <div className='rounded-md'>
             <FooterBrand
               href="https://flowbite.com"
-              src="https://flowbite.com/docs/images/logo.svg"
+
+              src={logo}
+            
               alt="Flowbite Logo"
-              name="Flowbite"
+              name="NewLeaf"
             />
           </div>
           <div className="grid grid-cols-2 gap-8 sm:mt-4 sm:grid-cols-3 sm:gap-6">

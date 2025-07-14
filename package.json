@@ -11,6 +11,7 @@
     "postinstall": "flowbite-react patch"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.83.0",
     "axios": "^1.10.0",
     "dotenv": "^17.2.0",
     "firebase": "^11.10.0",
