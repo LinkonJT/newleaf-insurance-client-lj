@@ -4,6 +4,13 @@ import { FcGoogle } from 'react-icons/fc';
 import { NavLink } from 'react-router';
 
 const SignIn = () => {
+
+
+
+
+
+
+  
     return (
          <Card className="max-w-sm my-5">
           <h2 className='font-medium mx-auto text-white underline text-lg'>Sign In here</h2>

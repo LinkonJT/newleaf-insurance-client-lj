@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card, Label, TextInput, FileInput, HelperText } from "flowbite-react";
-import { NavLink } from 'react-router';
+import { NavLink, useLocation, useNavigate } from 'react-router';
 import { FcGoogle } from 'react-icons/fc';
+import { useForm } from 'react-hook-form';
+import useAuth from '../../hooks/useAuth';
 
 const SignUp = () => {
+const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { createUser, updateUserProfile } = useAuth();
+  const [profilePic, setProfilePic] = useState("");
+
+
+  const location = useLocation()
+      const navigate = useNavigate()
+      const from = location.state?.from || '/'
+
+
+      const onSubmit= (data)=>{
+        console.log(data);
+   const userInfo = {
+          email: data.email,
+          role: 'user', //default role
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString(),
+        }
+
+
+        
+      }
+
   return (
     <Card className="max-w-sm my-2 px-4">
       <h2 className='font-medium mx-auto text-white underline text-lg'>Sign Up</h2>
