@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import {
   createUserWithEmailAndPassword,
+  getIdToken,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -51,6 +52,16 @@ const updateUserProfile = profileInfo =>{
       setUser(currentUser);
       console.log("user in the auth state change", currentUser)
       setLoading(false);
+//fb toke
+ if (currentUser) {
+        // Get Firebase token and store in localStorage
+        const token = await getIdToken(currentUser);
+        localStorage.setItem("access-token", token);
+      } else {
+        localStorage.removeItem("access-token");
+      }
+
+
     });
 
     return () => {

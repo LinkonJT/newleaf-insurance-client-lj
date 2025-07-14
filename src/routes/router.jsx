@@ -5,6 +5,7 @@ import SignIn from "../Pages/Authentication/SignIn";
 import SignUp from "../Pages/Authentication/SignUp";
 import AllPolicies from "../Pages/AllPolicies";
 import Blogs from "../Pages/Blogs";
+import Forbidden from "../Pages/Forbidden";
 
 export const router = createBrowserRouter([
   {
@@ -30,7 +31,11 @@ export const router = createBrowserRouter([
       {
         path: "/blogs",
         element: <Blogs></Blogs>
-      }
+      },
+      {
+  path: '/forbidden',
+  element: <Forbidden></Forbidden>
+}
     ]
   },
 ]);
