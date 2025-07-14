@@ -17,8 +17,8 @@ const AppNavbar = () => {
       </div>
       <NavbarCollapse>
         <NavLink to='/' className="text-gray-400 hover:text-white">Home</NavLink>
-        <NavLink to='/' className="text-gray-400 hover:text-white">All Policies</NavLink>
-        <NavLink to='/' className="text-gray-400 hover:text-white">Blogs</NavLink>
+        <NavLink to='/all-policies' className="text-gray-400 hover:text-white">All Policies</NavLink>
+        <NavLink to='/blogs' className="text-gray-400 hover:text-white">Blogs</NavLink>
         <NavLink to='/' className="text-gray-400 hover:text-white">Dashboard</NavLink>
       
       </NavbarCollapse>

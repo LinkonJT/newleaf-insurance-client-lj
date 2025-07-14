@@ -161,6 +161,12 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
             
      
             <SocialLogin></SocialLogin>
+               <p className="font-semibold text-center text-gray-200 gap-2">
+                    Already Have An Account?
+                    <NavLink className="text-blue-700 hover:underline ml-2" to="/signin">
+                      SignIn
+                    </NavLink>
+                  </p>
       </form>
     </Card>
   );

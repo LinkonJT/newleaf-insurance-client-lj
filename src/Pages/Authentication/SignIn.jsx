@@ -5,6 +5,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router';
 import SocialLogin from './SocialLogin';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 const SignIn = () => {
 
@@ -14,12 +15,24 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const navigate = useNavigate()
     const from = location.state?.from || '/'
 
-
+  const onSubmit = (data) => {
+    signInUser(data.email, data.password)
+      .then(async (result) => {
+        const token = await result.user.getIdToken();
+        localStorage.setItem('access-token', token); // Store token
+        toast.success('Login successful');
+        navigate(from); // Go back to previous page
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.message || 'Login failed');
+      });
+  };
   
     return (
          <Card className="max-w-sm my-5">
           <h2 className='font-medium mx-auto text-white underline text-lg'>Sign In here</h2>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             {/* Email */}
                <div>
                <Label className="mb-2 block" htmlFor="email">Your Email</Label>
@@ -66,7 +79,12 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
           
        <SocialLogin></SocialLogin>
-
+   <p className="font-semibold text-center text-gray-200 gap-2">
+                    Don't Have An Account?
+                    <NavLink className="text-blue-700 hover:underline ml-2" to="/signup">
+                      SignUp
+                    </NavLink>
+                  </p>
       </form>
 
     </Card>

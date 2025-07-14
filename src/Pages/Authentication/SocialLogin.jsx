@@ -43,12 +43,7 @@ const handleGoogleSignIn = () =>{
                   <Button onClick={handleGoogleSignIn} type="button" className="btn bg-base-100 btn-outline w-full hover:text-black">
                     <FcGoogle size={24} /> signUp with Google
                   </Button>
-                  <p className="font-semibold text-center text-gray-200 gap-2">
-                    Already Have An Account?
-                    <NavLink className="text-blue-700 hover:underline ml-2" to="/signin">
-                      SignIn
-                    </NavLink>
-                  </p>
+               
                 </div>
     );
 };
