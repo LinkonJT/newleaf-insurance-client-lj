@@ -1,145 +1,40 @@
-import React from 'react';
-import { NavLink, Outlet } from 'react-router';
-import ProFastLogo from '../pages/shared/proFastLogo/ProFastLogo';
-import { FaHome, FaHistory, FaTruck, FaUserEdit, FaMotorcycle, FaClock, FaUserShield, FaUserPlus, FaTasks } from "react-icons/fa";
-import { HiOutlineClipboardList } from "react-icons/hi";
-import useUserRole from '../hooks/useUserRole';
+import { Outlet } from "react-router";
+import useUserRole from "../hooks/useUserRole";
+import { Navigate } from "react-router";
+import AppSpinner from "../component/AppSpinner";
 
 const DashboardLayout = () => {
+  const { role, roleLoading } = useUserRole();
 
-const {role, roleLoading} = useUserRole();
-console.log(role);
+  if (roleLoading) {
+    return <AppSpinner></AppSpinner>
+  }
 
-    return (
-<div className="drawer lg:drawer-open">
-  <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-  <div className="drawer-content flex flex-col">
+  if (!role) {
+    return <Navigate to="/forbidden" />;
+  }
 
-       {/* Navbar */}
-    <div className="navbar bg-base-300 w-full lg:hidden">
-      <div className="flex-none ">
-        <label htmlFor="my-drawer-2" aria-label="open sidebar" className="btn btn-square btn-ghost">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="inline-block h-6 w-6 stroke-current"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-        </label>
-      </div>
-      <div className="mx-2 flex-1 px-2 lg:hidden">Dashboard</div>
-      <div className="hidden flex-none lg:hidden">
-        <ul className="menu menu-horizontal">
-          {/* Navbar menu content here */}
-          <li><a>Navbar Item 1x</a></li>
-          <li><a>Navbar Item 2x</a></li>
-        </ul>
-      </div>
+  return (
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 text-white p-4">
+        <h2 className="text-lg font-bold mb-4">Dashboard</h2>
+        {/* TODO: Add navigation based on role */}
+        <nav>
+          <ul className="space-y-2">
+            {role === "Admin" && <li>Admin Menu</li>}
+            {role === "Agent" && <li>Agent Menu</li>}
+            {role === "Customer" && <li>Customer Menu</li>}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-grow p-6 bg-gray-100">
+        <Outlet />
+      </main>
     </div>
-    {/* Page content here */}
-    <Outlet></Outlet>
-    {/* Page content here */}
-    
-  </div>
-  <div className="drawer-side">
-    <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-    <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-      {/* Sidebar content here */}
-
-
-       <ProFastLogo></ProFastLogo>
-          <li>
-        <NavLink to="/">
-          <FaHome className="inline mr-2" />
-          Home
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink to="/dashboard/myParcels">
-          <HiOutlineClipboardList className="inline mr-2" />
-          My Parcels
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink to="/dashboard/paymentHistory">
-          <FaHistory className="inline mr-2" />
-          Payment History
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink to="/dashboard/track">
-          <FaTruck className="inline mr-2" />
-          Track a Parcel
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink to="/dashboard/profile">
-          <FaUserEdit className="inline mr-2" />
-          Update Profile
-        </NavLink>
-      </li>
-{/* rider links */}
-{
-  !roleLoading &&  role === 'rider' &&  <>
-
-    <li>
-  <NavLink to="/dashboard/pending-deliveries">
-       <FaTasks className="inline-block mr-2" />
-    Pending Deliveries
-  </NavLink>
-</li>
-
-  </>
-}
-
-
-{/* admin link */}
-    {   !roleLoading &&  role === 'admin' &&  
-    <>
-    <li>
-  <NavLink to="/dashboard/assign-rider">
-       <FaUserPlus className="inline-block mr-2" />
-    Assign Rider
-  </NavLink>
-</li>
-
-    <li>
-        <NavLink to="/dashboard/active-riders">
-          <FaMotorcycle className="inline mr-2" />
-          Active Riders
-        </NavLink>
-      </li>
-
-      <li>
-        <NavLink to="/dashboard/pending-riders">
-          <FaClock className="inline mr-2" />
-          Pending Riders
-        </NavLink>
-      </li>
-
-      <li>
-  <NavLink to="/dashboard/makeAdmin">
-    <FaUserShield className="inline-block mr-2" />
-    Make Admin
-  </NavLink>
-</li>
-</>
-}
-    </ul>
-  </div>
-</div>
-    );
+  );
 };
 
 export default DashboardLayout;
