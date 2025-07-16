@@ -6,9 +6,12 @@ import useAuth from '../hooks/useAuth';
 
 import AppNavbar from '../component/Shared/AppNavbar';
 import AppFooter from '../component/Shared/AppFooter';
+import AppSpinner from '../component/AppSpinner';
+import useUserRole from '../hooks/useUserRole';
 
 const DashboardLayout = () => {
-  const { user, role, logOut } = useAuth();
+  const { user, logOut } = useAuth();
+  const { role, roleLoading } = useUserRole();
 
   const handleLogout = async () => {
     try {
@@ -18,10 +21,15 @@ const DashboardLayout = () => {
     }
   };
 
+
+  
+  if (roleLoading) {
+    return <AppSpinner></AppSpinner>
+  }
   return (
     <div className='flex flex-col min-h-screen'>
       <AppNavbar />
-      <div className='flex flex-grow'>
+      <div className='flex-grow'>
         <Sidebar className="w-64 min-h-screen">
           <SidebarItems>
             <SidebarItemGroup>

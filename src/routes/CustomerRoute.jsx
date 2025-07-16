@@ -9,7 +9,7 @@ const AdminRoute = ({ children }) => {
 
   if (loading || roleLoading) return <AppSpinner></AppSpinner>
 
-  if (user && role === "Customer") return children;
+  if (user && role === "customer") return children;
 
   return <Navigate to="/forbidden" />;
 };
