@@ -2,8 +2,27 @@ import React from 'react';
 import { Button, Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from "flowbite-react";
 import logo from '../../assets/Logo_nLeaf.png'
 import { NavLink } from 'react-router';
+import useAuth from '../../hooks/useAuth';
+import AppSpinner from '../AppSpinner';
 
 const AppNavbar = () => {
+
+   const { user, loading, logOut } = useAuth();
+
+const handleSignOut = async () => {
+  try {
+    await logOut();
+    console.log("Logged out successfully");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
+
+if (loading) {
+    return <AppSpinner></AppSpinner>
+  }
+
+
     return (
         <Navbar fluid rounded>
       <NavbarBrand href="">
@@ -12,7 +31,17 @@ const AppNavbar = () => {
       </NavbarBrand>
       <div className="flex md:order-2">
         
-        <NavLink to='/signin'><Button>Sign In</Button></NavLink>
+            {
+          user ? (
+            <Button onClick={handleSignOut}>Sign Out</Button>
+          ) : (
+            <NavLink to="/signin">
+              <Button>Sign In</Button>
+            </NavLink>
+          )
+        }
+
+
         <NavbarToggle />
       </div>
       <NavbarCollapse>
