@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 
-
-//public pages
+// Public pages
 import Home from "../Pages/Home";
 import SignIn from "../Pages/Authentication/SignIn";
 import SignUp from "../Pages/Authentication/SignUp";
@@ -10,59 +10,57 @@ import AllPolicies from "../Pages/AllPolicies";
 import Blogs from "../Pages/Blogs";
 import Forbidden from "../Pages/Forbidden";
 
-// Role-protected dashboard pages (placeholders for now)
+// Customer Dashboard pages
 import MyPolicies from "../Pages/Dashboard/Customer/MyPolicies";
+import PaymentStatus from "../Pages/Dashboard/Customer/PaymentStatus";
+import PaymentPage from "../Pages/Dashboard/Customer/PaymentPage";
+import ClaimRequest from "../Pages/Dashboard/Customer/ClaimRequest";
+
+// Admin Dashboard pages
 import ManageUsers from "../Pages/Dashboard/Admin/ManageUsers";
-import AgentApplications from "../Pages/Dashboard/Agent/AgentApplications";
+import ManageApplications from "../Pages/Dashboard/Admin/ManageApplications";
+import ManagePolicies from "../Pages/Dashboard/Admin/ManagePolicies";
+import ManageTransactions from "../Pages/Dashboard/Admin/ManageTransactions";
 
+// Agent Dashboard pages
+import AssignedCustomers from "../Pages/Dashboard/Agent/AssignedCustomers";
+import ManageBlogs from "../Pages/Dashboard/Agent/ManageBlogs";
+import PolicyClearance from "../Pages/Dashboard/Agent/PolicyClearance";
 
-// Routes
+// Shared
+import Profile from "../Pages/Dashboard/Shared/Profile";
+
+// Route protection
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import AgentRoute from "./AgentRoute";
 import CustomerRoute from "./CustomerRoute";
-import DashboardLayout from "../layouts/DashboardLayout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout></RootLayout>,
+    element: <RootLayout />,
     children: [
-      {
-        path: "/",
-        element: <Home></Home>
-      },
-      {
-        path: "/signin",
-        element: <SignIn></SignIn>
-      },
-      {
-        path: "/signup",
-        element: <SignUp></SignUp>
-      },
-      {
-        path: "/all-policies",
-        element: <AllPolicies></AllPolicies>
-      },
-      {
-        path: "/blogs",
-        element: <Blogs></Blogs>
-      },
-      {
-  path: '/forbidden',
-  element: <Forbidden></Forbidden>
-}
-    ]
+      { path: "/", element: <Home /> },
+      { path: "/signin", element: <SignIn /> },
+      { path: "/signup", element: <SignUp /> },
+      { path: "/all-policies", element: <AllPolicies /> },
+      { path: "/blogs", element: <Blogs /> },
+      { path: "/forbidden", element: <Forbidden /> },
+    ],
   },
- {
+  {
     path: "/dashboard",
     element: (
       <PrivateRoute>
-        <DashboardLayout></DashboardLayout>
+        <DashboardLayout />
       </PrivateRoute>
     ),
     children: [
-      // CUSTOMER ROUTE
+      // Shared
+      { path: "profile", element: <Profile /> },
+
+      // Customer
       {
         path: "my-policies",
         element: (
@@ -71,30 +69,90 @@ export const router = createBrowserRouter([
           </CustomerRoute>
         ),
       },
+      {
+        path: "payment-status",
+        element: (
+          <CustomerRoute>
+            <PaymentStatus />
+          </CustomerRoute>
+        ),
+      },
+      {
+        path: "payment/:applicationId",
+        element: (
+          <CustomerRoute>
+            <PaymentPage />
+          </CustomerRoute>
+        ),
+      },
+      {
+        path: "claim-request",
+        element: (
+          <CustomerRoute>
+            <ClaimRequest />
+          </CustomerRoute>
+        ),
+      },
 
-      // ADMIN ROUTE
+      // Admin
       {
         path: "manage-users",
         element: (
           <AdminRoute>
-            <ManageUsers></ManageUsers>
+            <ManageUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-applications",
+        element: (
+          <AdminRoute>
+            <ManageApplications />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-policies",
+        element: (
+          <AdminRoute>
+            <ManagePolicies />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-transactions",
+        element: (
+          <AdminRoute>
+            <ManageTransactions />
           </AdminRoute>
         ),
       },
 
-      // AGENT ROUTE
+      // Agent
       {
-        path: "agent-applications",
+        path: "assigned-customers",
         element: (
           <AgentRoute>
-            <AgentApplications />
+            <AssignedCustomers />
           </AgentRoute>
         ),
       },
-
-    
+      {
+        path: "manage-blogs",
+        element: (
+          <AgentRoute>
+            <ManageBlogs />
+          </AgentRoute>
+        ),
+      },
+      {
+        path: "policy-clearance",
+        element: (
+          <AgentRoute>
+            <PolicyClearance />
+          </AgentRoute>
+        ),
+      },
     ],
   },
-
-
 ]);

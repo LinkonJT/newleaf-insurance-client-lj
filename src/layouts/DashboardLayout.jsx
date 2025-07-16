@@ -1,40 +1,59 @@
-import { Outlet } from "react-router";
-import useUserRole from "../hooks/useUserRole";
-import { Navigate } from "react-router";
-import AppSpinner from "../component/AppSpinner";
+import React from 'react';
+import { Outlet } from 'react-router';
+import { Sidebar, SidebarCollapse, SidebarItem, SidebarItemGroup, SidebarItems } from "flowbite-react";
+import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser } from "react-icons/hi";
+import useAuth from '../hooks/useAuth';
+import { Link } from 'react-router';
+import AppNavbar from '../component/Shared/AppNavbar';
+import AppFooter from '../component/Shared/AppFooter';
 
 const DashboardLayout = () => {
-  const { role, roleLoading } = useUserRole();
-
-  if (roleLoading) {
-    return <AppSpinner></AppSpinner>
-  }
-
-  if (!role) {
-    return <Navigate to="/forbidden" />;
-  }
+  const { user, role } = useAuth(); 
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white p-4">
-        <h2 className="text-lg font-bold mb-4">Dashboard</h2>
-        {/* TODO: Add navigation based on role */}
-        <nav>
-          <ul className="space-y-2">
-            {role === "Admin" && <li>Admin Menu</li>}
-            {role === "Agent" && <li>Agent Menu</li>}
-            {role === "Customer" && <li>Customer Menu</li>}
-          </ul>
-        </nav>
-      </aside>
+    <div className='flex flex-col min-h-screen '>
+      <div>
+        <AppNavbar></AppNavbar>
+      </div>
+   
 
-      {/* Main Content */}
-      <main className="flex-grow p-6 bg-gray-100">
-        <Outlet />
-      </main>
+   <div className='flex-grow max-w-10/12 '> 
+          <Sidebar aria-label="Sidebar with multi-level dropdown example">
+      <SidebarItems>
+        <SidebarItemGroup>
+          <SidebarItem href="#" icon={HiChartPie}>
+            Dashboard
+          </SidebarItem>
+          <SidebarCollapse icon={HiShoppingBag} label="E-commerce">
+            <SidebarItem href="#">Products</SidebarItem>
+            <SidebarItem href="#">Sales</SidebarItem>
+            <SidebarItem href="#">Refunds</SidebarItem>
+            <SidebarItem href="#">Shipping</SidebarItem>
+          </SidebarCollapse>
+          <SidebarItem href="#" icon={HiInbox}>
+            Inbox
+          </SidebarItem>
+          <SidebarItem href="#" icon={HiUser}>
+            Users
+          </SidebarItem>
+          <SidebarItem href="#" icon={HiShoppingBag}>
+            Products
+          </SidebarItem>
+          <SidebarItem href="#" icon={HiArrowSmRight}>
+            Sign In
+          </SidebarItem>
+          <SidebarItem href="#" icon={HiTable}>
+            Sign Up
+          </SidebarItem>
+        </SidebarItemGroup>
+      </SidebarItems>
+    </Sidebar>
+   </div>
+     <AppFooter></AppFooter>
     </div>
+
   );
 };
 
 export default DashboardLayout;
+
