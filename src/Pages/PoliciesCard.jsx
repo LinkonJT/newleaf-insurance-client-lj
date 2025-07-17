@@ -3,24 +3,24 @@ import { Button, Card } from "flowbite-react";
 import { Link } from 'react-router';
 
 const PoliciesCard = ({ policy }) => {
-  const { _id, image, title, category, description } = policy;
+  const { _id, policyImage, title, category, shortDescription } = policy;
 
   return (
     <Card
       className="max-w-sm"
       imgAlt={title}
-      imgSrc={image || 'https://source.unsplash.com/400x200/?insurance'}
+      imgSrc={policyImage || 'https://source.unsplash.com/400x200/?insurance'}
     >
-      <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+      <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
         {title}
       </h5>
 
-      <h6 className="text-lg font-medium bg-amber-200 rounded-3xl w-fit px-3 py-1 tracking-tight text-gray-900 dark:text-white">
+      <h6 className="text-lg font-medium bg-violet-400 rounded-3xl w-fit px-3 py-1 tracking-tight text-gray-900 dark:text-white">
         {category}
       </h6>
 
       <p className="font-normal text-gray-700 dark:text-gray-400">
-        {description?.length > 80 ? description.slice(0, 80) + '...' : description}
+        {shortDescription}
       </p>
 
       <Link to={`/policy/${_id}`}>

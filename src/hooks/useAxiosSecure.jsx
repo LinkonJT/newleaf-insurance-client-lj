@@ -15,6 +15,7 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
 
   //  Request interceptor
+  
   // axiosSecure.interceptors.request.use(
   //   (config) => {
   //     if (user?.accessToken) {

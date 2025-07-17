@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import AppSpinner from '../component/AppSpinner';
 import useAxiosPublic from '../hooks/useAxiosPublic';
-import Test from './PoliciesCard';
+import PoliciesCard from './PoliciesCard';
 
 const AllPolicies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
 
@@ -15,13 +16,14 @@ const AllPolicies = () => {
   const limit = 9;
 
   const { data = {}, isLoading } = useQuery({
-    queryKey: ['policies', category, page],
+    queryKey: ['policies', category, page, search],
     queryFn: async () => {
       const res = await axiosPublic.get(`/policies`, {
         params: {
           category: category === 'all' ? undefined : category,
           page,
           limit,
+          search: search || undefined,
         },
       });
       return res.data;
@@ -32,28 +34,27 @@ const AllPolicies = () => {
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
+  const categories = ['all', 'Term Life', 'Senior Plan', 'Child Plan'];
+
   const handleCategoryChange = (cat) => {
-    setSearchParams({ category: cat, page: 1 });
+    setSearchParams({ category: cat, page: 1, search });
   };
 
   const handlePageChange = (newPage) => {
-    setSearchParams({ category, page: newPage });
+    setSearchParams({ category, page: newPage, search });
   };
 
-  const handleCardClick = (id) => {
-    navigate(`/policy-details/${id}`);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setSearchParams({ category, page: 1, search });
   };
-
-  const categories = ['all', 'Term Life', 'Senior Plan', 'Child Plan'];
-
-//   if (isLoading) return <AppSpinner />;
 
   return (
     <div className="p-5 max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">All Insurance Policies</h2>
+      <h2 className="text-2xl font-bold mb-6">All Insurance Policies</h2>
 
-      {/* Filter Buttons */}
-      <div className="flex flex-wrap gap-3 mb-6">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-4 mb-6">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -65,24 +66,34 @@ const AllPolicies = () => {
             {cat}
           </button>
         ))}
+
+        {/* Search */}
+        <form onSubmit={handleSearchSubmit} className="ml-auto">
+          <input
+            type="text"
+            placeholder="Search policies..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border px-3 py-1 rounded"
+          />
+          <button
+            type="submit"
+            className="ml-2 px-4 py-1 bg-blue-500 text-white rounded"
+          >
+            🔍 Search
+          </button>
+        </form>
       </div>
 
       {/* Policies Grid */}
-      {policies.length === 0 ? (
-        <p className="text-gray-500">No policies found for selected category.</p>
+      {isLoading ? (
+        <AppSpinner />
+      ) : policies.length === 0 ? (
+        <p className="text-gray-500">No policies found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {policies.map((policy) => (
-            <div
-              key={policy._id}
-              onClick={() => handleCardClick(policy._id)}
-              className="cursor-pointer bg-white shadow-md rounded-lg p-4 hover:shadow-lg"
-            >
-              <img src={policy.image} alt={policy.title} className="w-full h-40 object-cover rounded" />
-              <h3 className="text-lg font-semibold mt-3">{policy.title}</h3>
-              <p className="text-sm text-gray-500">{policy.category}</p>
-              <p className="text-gray-600 text-sm mt-2 line-clamp-3">{policy.short_description}</p>
-            </div>
+            <PoliciesCard key={policy._id} policy={policy} />
           ))}
         </div>
       )}
@@ -115,8 +126,6 @@ const AllPolicies = () => {
           Next
         </button>
       </div>
-
-   
     </div>
   );
 };

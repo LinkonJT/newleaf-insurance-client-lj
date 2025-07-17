@@ -73,12 +73,12 @@ const onSubmit = async (data) => {
         </div>
 
         <div>
-          <Label htmlFor="premiumCalculationLogic" value="Premium Calculation Logic">premiumCalculationLogic</Label>
+          <Label htmlFor="premiumCalculationLogic" value="Premium Calculation Logic">Premium Calculation Logic</Label>
           <TextInput id="premiumCalculationLogic" placeholder="e.g. Based on age, gender..." {...register("premiumCalculationLogic", { required: true })} />
         </div>
 
         <div>
-          <Label htmlFor="termLengthOptions" value="Term Length Options">termLengthOptions</Label>
+          <Label htmlFor="termLengthOptions" value="Term Length Options">Term Length Options</Label>
           <TextInput id="termLengthOptions" placeholder="e.g. 10, 15, 20, 30 years" {...register("termLengthOptions", { required: true })} />
         </div>
 
