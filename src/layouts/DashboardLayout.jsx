@@ -29,7 +29,7 @@ const DashboardLayout = () => {
   return (
     <div className='flex flex-col min-h-screen'>
       <AppNavbar />
-      <div className='flex-grow'>
+      <div className="flex">
         <Sidebar className="w-64 min-h-screen">
           <SidebarItems>
             <SidebarItemGroup>
@@ -101,7 +101,7 @@ const DashboardLayout = () => {
           </SidebarItems>
         </Sidebar>
 
-        <main className='flex-grow p-4'>
+        <main className='flex-grow items-end p-4'>
           <Outlet />
         </main>
       </div>
