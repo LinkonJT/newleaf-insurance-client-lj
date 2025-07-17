@@ -35,6 +35,7 @@ import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import AgentRoute from "./AgentRoute";
 import CustomerRoute from "./CustomerRoute";
+import AddPolicy from "../Pages/Dashboard/Admin/AddPolicy";
 
 export const router = createBrowserRouter([
   {
@@ -111,6 +112,12 @@ export const router = createBrowserRouter([
           </AdminRoute>
         ),
       },
+      {
+  path: 'add-policy',
+  element: <AdminRoute>
+    <AddPolicy></AddPolicy>
+  </AdminRoute>
+},
       {
         path: "manage-policies",
         element: (

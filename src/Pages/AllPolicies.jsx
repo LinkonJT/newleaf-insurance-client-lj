@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import AppSpinner from '../component/AppSpinner';
 import useAxiosPublic from '../hooks/useAxiosPublic';
+import Test from './PoliciesCard';
 
 const AllPolicies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -114,6 +115,8 @@ const AllPolicies = () => {
           Next
         </button>
       </div>
+
+   
     </div>
   );
 };
