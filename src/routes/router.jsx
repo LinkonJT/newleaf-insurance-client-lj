@@ -36,6 +36,7 @@ import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import AgentRoute from "./AgentRoute";
 import CustomerRoute from "./CustomerRoute";
+import PolicyDetails from "../Pages/PolicyDetails";
 
 
 export const router = createBrowserRouter([
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
       { path: "/all-policies", element: <AllPolicies /> },
       { path: "/blogs", element: <Blogs /> },
       { path: "/forbidden", element: <Forbidden /> },
+      {path: '/policy/:id',element: <PolicyDetails></PolicyDetails>},
     ],
   },
   {
@@ -119,6 +121,7 @@ export const router = createBrowserRouter([
     <AddPolicy></AddPolicy>
   </AdminRoute>
 },
+
       {
         path: "manage-policies",
         element: (

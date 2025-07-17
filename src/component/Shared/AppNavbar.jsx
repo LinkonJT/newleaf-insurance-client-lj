@@ -24,7 +24,7 @@ if (loading) {
 
 
     return (
-        <Navbar fluid rounded>
+        <Navbar fluid >
       <NavbarBrand href="">
         <img src={logo} className="mr-3 w-10 rounded-full" alt="Flowbite React Logo" />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">NewLeaf </span>
