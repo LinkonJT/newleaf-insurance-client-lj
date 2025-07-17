@@ -7,10 +7,17 @@ const PoliciesCard = ({ policy }) => {
 
   return (
     <Card
-      className="max-w-sm"
-      imgAlt={title}
-      imgSrc={policyImage || 'https://source.unsplash.com/400x200/?insurance'}
+      className="max-w-lg"
+      
+  
     >
+       <div className="h-48 w-full">
+    <img
+      src={policyImage || 'https://images.unsplash.com/photo-1750668251415-bd40b8154f45?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
+      alt={title}
+      className="w-full h-48 object-cover"
+    />
+  </div>
       <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
         {title}
       </h5>

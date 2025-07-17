@@ -34,7 +34,13 @@ const AllPolicies = () => {
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
-  const categories = ['all', 'Term Life', 'Senior Plan', 'Child Plan'];
+  const categories = ['all', 'Term Life', 'Senior Plan', 'Child Plan','Accident Ins',
+    'Home Ins',
+    'Auto Ins',
+    'Travel Ins',
+    'Disability Ins',
+    'Education Plan'
+  ];
 
   const handleCategoryChange = (cat) => {
     setSearchParams({ category: cat, page: 1, search });
@@ -51,7 +57,7 @@ const AllPolicies = () => {
 
   return (
     <div className="p-5 max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">All Insurance Policies</h2>
+      <h2 className="text-2xl text-center font-bold mb-6">All Insurance Policies</h2>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -67,6 +73,9 @@ const AllPolicies = () => {
           </button>
         ))}
 
+
+        
+
         {/* Search */}
         <form onSubmit={handleSearchSubmit} className="ml-auto">
           <input
@@ -76,7 +85,7 @@ const AllPolicies = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="border px-3 py-1 rounded"
           />
-          <button
+       <button
             type="submit"
             className="ml-2 px-4 py-1 bg-blue-500 text-white rounded"
           >
