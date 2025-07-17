@@ -7,10 +7,18 @@ const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const { role, roleLoading } = useUserRole();
 
+
+ console.log({ user, role, loading, roleLoading });
+
   if (loading || roleLoading) return <AppSpinner></AppSpinner>
 
-  if (user && role === "Admin") return children;
+  if (user && role === "admin"){
+    console.log('Admin access granted!');
+return children;
+  } 
 
+
+  console.log('Redirecting to forbidden:', { user, role });
   return <Navigate to="/forbidden" />;
 };
 

@@ -21,6 +21,7 @@ import ManageUsers from "../Pages/Dashboard/Admin/ManageUsers";
 import ManageApplications from "../Pages/Dashboard/Admin/ManageApplications";
 import ManagePolicies from "../Pages/Dashboard/Admin/ManagePolicies";
 import ManageTransactions from "../Pages/Dashboard/Admin/ManageTransactions";
+import AddPolicy from "../Pages/Dashboard/Admin/AddPolicy";
 
 // Agent Dashboard pages
 import AssignedCustomers from "../Pages/Dashboard/Agent/AssignedCustomers";
@@ -35,7 +36,7 @@ import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import AgentRoute from "./AgentRoute";
 import CustomerRoute from "./CustomerRoute";
-import AddPolicy from "../Pages/Dashboard/Admin/AddPolicy";
+
 
 export const router = createBrowserRouter([
   {
