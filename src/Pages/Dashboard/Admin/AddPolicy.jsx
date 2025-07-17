@@ -1,52 +1,94 @@
-import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
-import useAxiosSecure from '../../../hooks/useAxiosSecure';
-import Swal from 'sweetalert2';
-import AppSpinner from '../../../component/AppSpinner';
+import { useForm } from "react-hook-form";
+import { Label, TextInput, Button, Textarea } from "flowbite-react";
+import { toast } from "react-toastify";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AddPolicy = () => {
-  const { register, handleSubmit, reset } = useForm();
-  const axiosSecure = useAxiosSecure();
+  
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (newPolicy) => {
-      const res = await axiosSecure.post('/policies', newPolicy);
-      return res.data;
-    },
-    onSuccess: () => {
-      Swal.fire('Success', 'Policy added successfully!', 'success');
+
+ const { register, handleSubmit, reset } = useForm();
+
+ const axiosSecure = useAxiosSecure();
+
+const onSubmit = async (data) => {
+  try {
+    const res = await axiosSecure.post("/policies", data);
+    if (res.data.insertedId) {
+      toast.success("Policy added successfully!");
       reset();
-    },
-    onError: () => {
-      Swal.fire('Error', 'Something went wrong. Try again.', 'error');
-    },
-  });
-
-
- 
-  const onSubmit = async (data) => {
-    data.premium = parseFloat(data.premium);
-    await mutateAsync(data);
-  };
+    }
+  } catch (err) {
+    console.error("Error adding policy:", err);
+    toast.error("Failed to add policy.");
+  }
+};
 
   return (
-    <div className="max-w-3xl mx-auto p-4 bg-white rounded-xl shadow-lg">
-      <h2 className="text-xl font-semibold mb-4">Add New Policy</h2>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-bold text-center text-gray-800">Add New Policy</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input {...register('title', { required: true })} placeholder="Title" className="input input-bordered w-full" />
-        <textarea {...register('description', { required: true })} placeholder="Description" className="textarea textarea-bordered w-full" />
-        <input {...register('category', { required: true })} placeholder="Category (e.g. Life, Health)" className="input input-bordered w-full" />
-        <input type="number" step="0.01" {...register('premium', { required: true })} placeholder="Premium (USD)" className="input input-bordered w-full" />
-        <input {...register('coverage', { required: true })} placeholder="Coverage Details" className="input input-bordered w-full" />
-        <input {...register('duration', { required: true })} placeholder="Duration (e.g. 10 years)" className="input input-bordered w-full" />
-        <input {...register('terms', { required: true })} placeholder="Terms & Conditions" className="input input-bordered w-full" />
+     
+    {/* Photo URL */}
+      <div>
+        <Label htmlFor="photoUrl" className="mb-1 text-black">Photo URL</Label>
+        <TextInput id="photoUrl" placeholder="https://example.com/policy.jpg" {...register("policyImage", { required: true })} shadow />
+      </div>
 
-        <button type="submit" className="btn btn-primary w-full">
-          {isPending ? <AppSpinner /> : 'Add Policy'}
-        </button>
-      </form>
-    </div>
+      {/* Title */}
+      <div>
+        <Label htmlFor="title" className="mb-1 text-black" />
+        <TextInput id="title" placeholder="Enter title" {...register("title", { required: true })} />
+      </div>
+
+      {/* Category */}
+      <div>
+        <Label htmlFor="category" value="Category" className="mb-1 text-black" />
+        <TextInput id="category" placeholder="e.g. Life, Term, Whole" {...register("category", { required: true })} />
+      </div>
+
+      {/* Short Description */}
+      <div>
+        <Label htmlFor="shortDescription" value="Short Description" />
+        <TextInput id="shortDescription" placeholder="One-liner about the policy" {...register("shortDescription", { required: true })} />
+      </div>
+
+      {/* Description */}
+      <div>
+        <Label htmlFor="description" value="Full Description" />
+        <Textarea id="description" placeholder="Long description of the policy" rows={4} {...register("description", { required: true })} />
+      </div>
+
+      {/* Key Information */}
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="eligibility" value="Eligibility" />
+          <TextInput id="eligibility" placeholder="e.g. Individuals aged 18 to 60" {...register("eligibility", { required: true })} />
+        </div>
+
+        <div>
+          <Label htmlFor="benefits" value="Benefits" />
+          <TextInput id="benefits" placeholder="e.g. Death, Terminal Illness..." {...register("benefits", { required: true })} />
+        </div>
+
+        <div>
+          <Label htmlFor="premiumCalculationLogic" value="Premium Calculation Logic" />
+          <TextInput id="premiumCalculationLogic" placeholder="e.g. Based on age, gender..." {...register("premiumCalculationLogic", { required: true })} />
+        </div>
+
+        <div>
+          <Label htmlFor="termLengthOptions" value="Term Length Options" />
+          <TextInput id="termLengthOptions" placeholder="e.g. 10, 15, 20, 30 years" {...register("termLengthOptions", { required: true })} />
+        </div>
+
+        <div className="sm:col-span-2">
+          <Label htmlFor="coverageRange" value="Coverage Range" />
+          <TextInput id="coverageRange" placeholder="e.g. BDT 5 Lakh to 5 Crore" {...register("coverageRange", { required: true })} />
+        </div>
+      </div>
+
+      <Button type="submit">Add Policy</Button>
+    </form>
   );
 };
 
