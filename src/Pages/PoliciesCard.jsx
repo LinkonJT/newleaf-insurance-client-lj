@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Card } from "flowbite-react";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const PoliciesCard = ({ policy }) => {
   const { _id, image, title, category, description } = policy;

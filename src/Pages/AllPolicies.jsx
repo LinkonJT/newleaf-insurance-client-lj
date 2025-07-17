@@ -46,7 +46,7 @@ const AllPolicies = () => {
 
   const categories = ['all', 'Term Life', 'Senior Plan', 'Child Plan'];
 
-  if (isLoading) return <AppSpinner />;
+//   if (isLoading) return <AppSpinner />;
 
   return (
     <div className="p-5 max-w-6xl mx-auto">

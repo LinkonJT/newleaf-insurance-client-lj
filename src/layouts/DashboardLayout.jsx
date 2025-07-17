@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router';
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from "flowbite-react";
-import { HiUser, HiOutlineClipboardList, HiCurrencyDollar, HiClipboardCheck, HiOutlineDocumentText, HiHome, HiLogout, HiUserGroup } from "react-icons/hi";
+import { HiUser, HiOutlineClipboardList, HiCurrencyDollar, HiClipboardCheck, HiOutlineDocumentText, HiHome, HiLogout, HiUserGroup, HiOutlineDocumentReport } from "react-icons/hi";
 import useAuth from '../hooks/useAuth';
 
 import AppNavbar from '../component/Shared/AppNavbar';
@@ -42,6 +42,9 @@ const DashboardLayout = () => {
 
               {role === 'admin' && (
                 <>
+                <SidebarItem  icon={HiOutlineDocumentReport} as={NavLink} to="/dashboard/add-policy">
+                    Add Policy
+                  </SidebarItem>
                   <SidebarItem icon={HiOutlineClipboardList} as={NavLink} to="/dashboard/manage-applications">
                     Manage Applications
                   </SidebarItem>
