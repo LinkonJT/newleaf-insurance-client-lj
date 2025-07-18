@@ -33,7 +33,14 @@ if (loading) {
         
             {
           user ? (
+            <>
+           <div className='flex items-center gap-2'>
+             <span className="text-sm hidden sm:block bg-green-400 font-bold text-blue-800 rounded-2xl p-2">
+              {user.displayName || user.email}
+            </span>
             <Button onClick={handleSignOut}>Sign Out</Button>
+           </div>
+            </>
           ) : (
             <NavLink to="/signin">
               <Button>Sign In</Button>
