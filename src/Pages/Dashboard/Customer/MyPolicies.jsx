@@ -73,7 +73,7 @@ const MyPolicies = () => {
                 </Button>
 
                 <div className="mr-2">
-                  <ClientReviewModal></ClientReviewModal>
+                  <ClientReviewModal policyId={app.policyId} policyTitle={app.policy?.title}></ClientReviewModal>
                 </div>
 
                 <Button className="px-2 text-xs py-1 bg-gray-500 text-white rounded hover:bg-gray-600">
