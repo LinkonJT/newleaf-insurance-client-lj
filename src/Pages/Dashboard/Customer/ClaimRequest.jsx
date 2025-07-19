@@ -1,168 +1,149 @@
-import { useState } from "react";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const ClaimRequest = () => {
-  const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const [selectedApplication, setSelectedApplication] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
 
-  // Get all approved policies of the user
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  // Fetch approved applications (policies)
   const { data: applications = [], isLoading } = useQuery({
-    queryKey: ["myApprovedApplications", user?.email],
+    queryKey: ['approvedPolicies', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/applications?email=${user.email}`);
-      return res.data.filter(app => app.status === "Approved");
-    },
+      const res = await axiosSecure.get(`/applications/approved/${user.email}`);
+      return res.data;
+    }
   });
 
-  const handleClaimSubmit = async (e, app) => {
+  // Fetch existing claims by user
+  const { data: claims = [] } = useQuery({
+    queryKey: ['myClaims', user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/claims/${user.email}`);
+      return res.data;
+    }
+  });
+
+  // Check if a claim already exists for a policy
+  const getClaimStatus = (policyId) => {
+    const claim = claims.find((c) => c.policyId === policyId);
+    return claim?.status;
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleClaimSubmit = async (e, application) => {
     e.preventDefault();
-    setSubmitting(true);
+    setUploading(true);
 
     const form = e.target;
     const reason = form.reason.value;
-    const file = form.document.files[0];
-
-    // Step 1: Upload image to IMGBB
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
-    let documentURL = "";
 
     try {
-      const res = await axiosSecure.post(imageUploadUrl, formData);
-      documentURL = res.data.data.url;
-    } catch (error) {
-      console.error("IMGBB Upload Error:", error);
-      Swal.fire("Upload Failed", "Unable to upload document. Try again.", "error");
-      setSubmitting(false);
-      return;
-    }
+      // 1. Upload image to imgbb
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
+      const imgRes = await axiosSecure.post(imageUploadUrl, formData);
+      const imageUrl = imgRes.data.data.url;
 
-    // Step 2: Submit claim to DB
-    const claimData = {
-      userEmail: user.email,
-      userName: user.displayName,
-      policyTitle: app.policyTitle,
-      applicationId: app._id,
-      reason,
-      documentURL,
-      claimStatus: "Pending",
-    };
+      // 2. Post claim to DB
+      const claimData = {
+        userEmail: user.email,
+        policyId: application.policyId,
+        policyTitle: application.policyTitle,
+        reason,
+        imageUrl,
+      };
 
-    try {
-      const response = await axiosSecure.post("/claims", claimData);
-      if (response.data.insertedId) {
-        Swal.fire("Success", "Your claim has been submitted!", "success");
-        form.reset();
-        setSelectedApplication(null);
-      }
+      await axiosSecure.post("/claims", claimData);
+      Swal.fire("Claim Submitted!", "Your claim is under review.", "success");
+      form.reset();
+      setSelectedFile(null);
+      queryClient.invalidateQueries(["myClaims"]);
     } catch (err) {
       console.error(err);
       Swal.fire("Error", "Failed to submit claim", "error");
+    } finally {
+      setUploading(false);
     }
-
-    setSubmitting(false);
   };
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Claim Request</h2>
+      <h2 className="text-2xl font-semibold mb-4">Claim Request</h2>
 
       {isLoading ? (
-        <p>Loading...</p>
+        <p>Loading approved policies...</p>
+      ) : applications.length === 0 ? (
+        <p>No approved policies available.</p>
       ) : (
-        <div className="grid gap-4">
-          {applications.length === 0 && <p>No approved policies found.</p>}
+        <div className="grid md:grid-cols-2 gap-6">
+          {applications.map((app) => {
+            const claimStatus = getClaimStatus(app.policyId);
+            const claimed = !!claimStatus;
 
-          {applications.map((app) => (
-            <div key={app._id} className="border p-4 rounded-lg shadow">
-              <h3 className="text-lg font-semibold">{app.policyTitle}</h3>
-              <p><span className="font-medium">Status:</span> {app.claimStatus || "Not Claimed"}</p>
-
-              {app.claimStatus === "Pending" || app.claimStatus === "Approved" ? (
-                <p className={`mt-2 font-semibold text-${app.claimStatus === "Approved" ? "green" : "yellow"}-600`}>
-                  Claim Status: {app.claimStatus}
+            return (
+              <div key={app._id} className="border p-4 rounded-xl shadow">
+                <h3 className="text-xl font-bold mb-2">{app.policyTitle}</h3>
+                <p className="mb-2">
+                  <span className="font-medium">Policy ID:</span> {app.policyId}
                 </p>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setSelectedApplication(app)}
-                    className="btn btn-primary mt-3"
-                  >
-                    Submit Claim
-                  </button>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
 
-      {/* Claim form */}
-      {selectedApplication && (
-        <div className="mt-8 border-t pt-6">
-          <h3 className="text-xl font-bold mb-4">Submit Claim for: {selectedApplication.policyTitle}</h3>
-          <form onSubmit={(e) => handleClaimSubmit(e, selectedApplication)} className="space-y-4 max-w-md">
-            <div>
-              <label className="label">
-                <span className="label-text">Policy Title</span>
-              </label>
-              <input
-                type="text"
-                value={selectedApplication.policyTitle}
-                readOnly
-                className="input input-bordered w-full"
-              />
-            </div>
+                <form onSubmit={(e) => handleClaimSubmit(e, app)}>
+                  <label className="block mb-1 font-medium">Reason for Claim</label>
+                  <textarea
+                    name="reason"
+                    required
+                    disabled={claimed}
+                    className="w-full border rounded p-2 mb-2"
+                  ></textarea>
 
-            <div>
-              <label className="label">
-                <span className="label-text">Reason for Claim</span>
-              </label>
-              <textarea
-                name="reason"
-                required
-                className="textarea textarea-bordered w-full"
-                placeholder="Describe the reason"
-              />
-            </div>
+                  <label className="block mb-1 font-medium">Upload Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    disabled={claimed}
+                    required={!claimed}
+                    className="mb-3"
+                  />
 
-            <div>
-              <label className="label">
-                <span className="label-text">Upload Document (image only)</span>
-              </label>
-              <input
-                type="file"
-                name="document"
-                accept=".jpg,.jpeg,.png"
-                required
-                className="file-input file-input-bordered w-full"
-              />
-            </div>
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="submit"
+                      disabled={claimed || uploading}
+                      className={`px-4 py-2 rounded bg-blue-600 text-white ${
+                        claimed || uploading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                    >
+                      {uploading ? "Submitting..." : "Submit Claim"}
+                    </button>
 
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                className="btn btn-success"
-                disabled={submitting}
-              >
-                {submitting ? "Submitting..." : "Submit Claim"}
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={() => setSelectedApplication(null)}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+                    {claimed && (
+                      <span
+                        className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                          claimStatus === "Approved"
+                            ? "bg-green-200 text-green-800"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {claimStatus}
+                      </span>
+                    )}
+                  </div>
+                </form>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
