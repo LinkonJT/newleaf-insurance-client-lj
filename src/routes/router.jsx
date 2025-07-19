@@ -39,6 +39,7 @@ import CustomerRoute from "./CustomerRoute";
 import PolicyDetails from "../Pages/PolicyDetails";
 import Quote from "../Pages/Quote";
 import ApplyPolicy from "../Pages/ApplyPolicy";
+import Payment from "../Pages/Dashboard/Customer/Payment/Payment";
 
 
 export const router = createBrowserRouter([
@@ -96,7 +97,7 @@ export const router = createBrowserRouter([
         path: "payment/:applicationId",
         element: (
           <CustomerRoute>
-            <PaymentPage />
+           <PaymentPage></PaymentPage>
           </CustomerRoute>
         ),
       },
