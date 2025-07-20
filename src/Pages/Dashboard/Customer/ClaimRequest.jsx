@@ -97,7 +97,7 @@ const ClaimRequest = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded-xl space-y-4">
+    <div className="max-w-xl mx-auto p-6 bg-gray-400 shadow rounded-xl space-y-4">
       <h2 className="text-2xl font-bold mb-4">Submit a Claim</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

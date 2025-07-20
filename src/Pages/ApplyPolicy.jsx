@@ -56,8 +56,11 @@ const termLength = location.state?.termLength;
     Apply for Policy
   </h2>
 
+
+
   {/* Personal Info */}
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  
     <div>
       <Label htmlFor="name">Full Name</Label>
       <TextInput

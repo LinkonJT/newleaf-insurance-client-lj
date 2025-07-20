@@ -97,7 +97,7 @@ export const router = createBrowserRouter([
         path: "payment/:applicationId",
         element: (
           <CustomerRoute>
-           <PaymentPage></PaymentPage>
+           <Payment></Payment>
           </CustomerRoute>
         ),
       },
