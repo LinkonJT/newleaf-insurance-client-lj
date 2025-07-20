@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Label, TextInput, Button, Textarea, Checkbox } from "flowbite-react";
 import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
 
@@ -13,7 +13,11 @@ const ApplyPolicy = () => {
   const { id: policyId } = useParams(); 
   const navigate = useNavigate()
 
+      const location = useLocation();
+const premium = location.state?.premium;
+
   const onSubmit = async (data) => {
+
 
 
       const applicationData = {
@@ -21,6 +25,7 @@ const ApplyPolicy = () => {
     policyId,
     userId: user?.uid || user?._id, 
     status: "pending",
+     premiumAmount: premium,
     createdAt: new Date(),
   };
 

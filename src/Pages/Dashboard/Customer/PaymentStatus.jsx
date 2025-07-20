@@ -51,7 +51,8 @@ const PaymentStatus = () => {
                   {app.policyData?.title || "N/A"}
                 </TableCell>
                 <TableCell>
-                  {app.policyData?.premiumCalculationLogic || "N/A"}
+                  {/* {app.policyData?.premiumCalculationLogic || "N/A"} */}
+                  ৳{app.premiumAmount || "N/A"}
                 </TableCell>
                 <TableCell>
                   {app.policyData?.paymentFrequency || "Monthly"}
