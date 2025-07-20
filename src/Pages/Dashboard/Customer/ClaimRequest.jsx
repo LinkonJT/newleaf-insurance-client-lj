@@ -1,29 +1,36 @@
-import { Label, Button, Select, FileInput, HelperText, TextInput } from "flowbite-react";
-import Swal from "sweetalert2";
-import useAuth from "../../../hooks/useAuth";
 import { useForm } from "react-hook-form";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
+import Swal from "sweetalert2";
+import {
+  Label,
+  Button,
+  Select,
+  FileInput,
+  HelperText,
+  TextInput,
+} from "flowbite-react";
+import axios from "axios";
+import { useState } from "react";
 
 const ClaimRequest = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
+  const [imageUrl, setImageUrl] = useState("");
+  const [selectedAppId, setSelectedAppId] = useState("");
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
-    watch,
     reset,
-    setValue,
     formState: { errors },
   } = useForm();
 
-  // --- Queries ---
-  const { data: applications = [] } = useQuery({
-    queryKey: ["approved-applications", user?.email],
+  // Fetch approved applications
+  const { data: applications = [], isLoading: loadingApps } = useQuery({
+    queryKey: ["approvedApplications", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/applications/approved/${user?.email}`);
       return res.data;
@@ -31,44 +38,44 @@ const ClaimRequest = () => {
     enabled: !!user?.email,
   });
 
-  const { data: existingClaims = {} } = useQuery({
-    queryKey: ["existing-claims", user?.email],
+  // Fetch existing claims
+  const { data: claims = [], isLoading: loadingClaims } = useQuery({
+    queryKey: ["claims", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/claims/${user?.email}`);
-      const map = {};
-      res.data.forEach(claim => {
-        map[claim.applicationId] = claim.status;
-      });
-      return map;
+      return res.data;
     },
     enabled: !!user?.email,
   });
 
-  // --- Image Upload handler ---
+  const claimsMap = {};
+  claims.forEach(claim => {
+    claimsMap[claim.applicationId] = claim.status;
+  });
+
+  // Image Upload Handler (IMGBB)
   const handleImageUpload = async (e) => {
     const image = e.target.files[0];
     const formData = new FormData();
     formData.append("image", image);
 
-    const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
-    const res = await axios.post(imageUploadUrl, formData);
-    const imageUrl = res.data?.data?.url;
-
-    if (imageUrl) {
-      setValue("claimFileUrl", imageUrl);
-      Swal.fire("Image Uploaded", "Your image has been uploaded", "success");
-    }
+    const imgbbUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
+    const res = await axios.post(imgbbUrl, formData);
+    setImageUrl(res.data.data.url);
   };
 
-  // --- Mutation for claim ---
-  const claimMutation = useMutation({
-    mutationFn: async (data) => {
-      return axiosSecure.post("/claims", data);
+  // Submit Claim
+  const mutation = useMutation({
+    mutationFn: async (claimData) => {
+      const res = await axiosSecure.post("/claims", claimData);
+      return res.data;
     },
     onSuccess: () => {
       Swal.fire("Success", "Claim submitted successfully!", "success");
-      queryClient.invalidateQueries(["existing-claims", user?.email]);
-      reset(); // Clear form
+      queryClient.invalidateQueries(["claims", user?.email]);
+      reset();
+      setSelectedAppId("");
+      setImageUrl("");
     },
     onError: () => {
       Swal.fire("Error", "Failed to submit claim", "error");
@@ -76,89 +83,90 @@ const ClaimRequest = () => {
   });
 
   const onSubmit = (data) => {
+    if (!selectedAppId || !imageUrl) return;
+
     const payload = {
-      applicationId: data.applicationId,
+      applicationId: selectedAppId,
       userEmail: user.email,
-      claimReason: data.claimReason,
-      claimFileUrl: data.claimFileUrl,
+      claimFileUrl: imageUrl,
+      reason: data.claimReason,
       status: "Pending",
       createdAt: new Date(),
     };
-    claimMutation.mutate(payload);
+    mutation.mutate(payload);
   };
 
   return (
-    <div className="max-w-xl mx-auto p-4 bg-gray-400 shadow rounded-xl space-y-4">
-      <h2 className="text-2xl font-bold">Submit a Claim</h2>
+    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded-xl space-y-4">
+      <h2 className="text-2xl font-bold mb-4">Submit a Claim</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Approved Policy Selection */}
+        {/* Select Approved Policy */}
         <div>
-          <Label htmlFor="applicationId" value="Select Approved Policy" />
+          <Label htmlFor="policy" value="Select Approved Policy" />
           <Select
-            id="applicationId"
-            {...register("applicationId", { required: "Please select a policy" })}
+            id="policy"
+            value={selectedAppId}
+            onChange={(e) => setSelectedAppId(e.target.value)}
+            required
           >
             <option value="">Select a policy</option>
             {applications.map((app) => (
               <option key={app._id} value={app._id}>
-                {app.policyTitle || "Untitled Policy"}
+                {app.policyTitle}
               </option>
             ))}
           </Select>
-          {errors.applicationId && (
-            <p className="text-red-500 text-sm">{errors.applicationId.message}</p>
-          )}
         </div>
 
-        {/* Show Claim Status */}
-        {watch("applicationId") && (
-          <p className="text-sm text-gray-500">
+        {/* Claim Status */}
+        {selectedAppId && (
+          <p className="text-sm text-gray-600">
             Claim Status:{" "}
-            <span className="font-medium">
-              {existingClaims?.[watch("applicationId")] || "Not claimed yet"}
+            <span className="font-medium text-black">
+              {claimsMap[selectedAppId] || "Not claimed yet"}
             </span>
           </p>
         )}
 
-        {/* Reason for Claim */}
+        {/* Reason Input */}
         <div>
-          <Label htmlFor="claimReason">Reason For Claim</Label>
+          <Label htmlFor="claimReason" value="Reason for Claim" />
           <TextInput
             id="claimReason"
             placeholder="Enter reason for claim"
-            {...register("claimReason", { required: "Claim reason is required" })}
+            {...register("claimReason", { required: "Reason is required" })}
           />
           {errors.claimReason && (
-            <p className="text-red-500 text-sm">{errors.claimReason.message}</p>
+            <HelperText color="failure">
+              {errors.claimReason.message}
+            </HelperText>
           )}
         </div>
 
-        {/* Photo Upload */}
+        {/* File Upload */}
         <div>
-          <Label className="mb-2 block" htmlFor="photo">Upload Supporting Photo</Label>
+          <Label htmlFor="photo" value="Upload Document/Proof" />
           <FileInput id="photo" onChange={handleImageUpload} />
-          <HelperText className="mt-1 text-xs md:text-sm">
-            PNG, JPG, or GIF (MAX. 800x400px).
+          <HelperText className="text-xs mt-1">
+            JPG, PNG, or PDF proof (uploaded to IMGBB).
           </HelperText>
-          {errors.claimFileUrl && (
-            <p className="text-red-500 text-sm mt-1">Photo is required</p>
-          )}
         </div>
 
-        {/* Hidden Field for Uploaded Image URL */}
-        <input type="hidden" {...register("claimFileUrl", { required: true })} />
-
-        <Button
-          type="submit"
-          disabled={
-            !watch("applicationId") ||
-            !!existingClaims?.[watch("applicationId")] ||
-            !watch("claimFileUrl")
-          }
-        >
-          Submit Claim
-        </Button>
+        {/* Submit Button or Status */}
+        {selectedAppId && claimsMap[selectedAppId] ? (
+          <div className="text-center font-medium text-green-600">
+            You have already submitted a claim. Status:{" "}
+            {claimsMap[selectedAppId]}
+          </div>
+        ) : (
+          <Button
+            type="submit"
+            disabled={!selectedAppId || !imageUrl || mutation.isLoading}
+          >
+            {mutation.isLoading ? "Submitting..." : "Submit Claim"}
+          </Button>
+        )}
       </form>
     </div>
   );
