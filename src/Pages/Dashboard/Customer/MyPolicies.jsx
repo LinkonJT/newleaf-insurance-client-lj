@@ -46,13 +46,10 @@ const MyPolicies = () => {
               <TableCell className="font-medium">
                 {app.policyData?.title || "N/A"}
               </TableCell>
-              <TableCell>{app.policyData?.coverageRange || "N/A"}</TableCell>
-              <TableCell>
-                {app.policyData?.termLengthOptions || "N/A"}
-              </TableCell>
-              <TableCell>
-                {app.policyData?.premiumCalculationLogic || "N/A"}
-              </TableCell>
+              {/* <TableCell>{app.policyData?.coverageRange || "N/A"}</TableCell> */}
+              <TableCell>BDT {app.coverageAmount || "N/A"}</TableCell>
+            <TableCell>{app.termLength || "N/A"} years</TableCell>
+              <TableCell>৳{app.premiumAmount || "N/A"}/month</TableCell>
               <TableCell>
                 <span
                   className={`px-2 py-1 rounded text-white text-xs font-medium ${

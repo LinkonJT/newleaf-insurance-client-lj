@@ -15,6 +15,8 @@ const ApplyPolicy = () => {
 
       const location = useLocation();
 const premium = location.state?.premium;
+const coverageAmount = location.state?.coverageAmount;
+const termLength = location.state?.termLength;
 
   const onSubmit = async (data) => {
 
@@ -26,6 +28,8 @@ const premium = location.state?.premium;
     userId: user?.uid || user?._id, 
     status: "pending",
      premiumAmount: premium,
+     coverageAmount,
+  termLength,
     createdAt: new Date(),
   };
 

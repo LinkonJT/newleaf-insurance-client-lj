@@ -95,7 +95,15 @@ const Quote = () => {
         <div className="text-center mt-4 space-y-2">
           <p className="text-lg font-semibold text-green-700">Estimated Monthly Premium: ৳{premium.monthly}</p>
           <p className="text-md text-gray-700">Estimated Annual Premium: ৳{premium.annual}</p>
-          <Button onClick={() => navigate(`/apply/${id}`,  { state: { premium: premium.monthly } })} color="purple">Apply for Policy</Button>
+          <Button onClick={() => navigate(`/apply/${id}`,  { 
+  state: { 
+    premium: premium.monthly,
+    coverageAmount: formData.coverageAmount,
+    termLength: formData.duration
+  } 
+})} color="purple">
+  Apply for Policy
+</Button>
         </div>
       )}
     </div>
