@@ -1,150 +1,103 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAuth from "../../../hooks/useAuth";
-import { useState } from "react";
-import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { toast } from "react-toastify";
+import useAuth from "../../../hooks/useAuth";
 
 const ClaimRequest = () => {
-  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const [approvedApplications, setApprovedApplications] = useState([]);
+  const [selectedAppId, setSelectedAppId] = useState("");
+  const [details, setDetails] = useState("");
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-
-  // Fetch approved applications (policies)
-  const { data: applications = [], isLoading } = useQuery({
-    queryKey: ['approvedPolicies', user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/applications/approved/${user.email}`);
-      return res.data;
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure
+        .get(`/applications/approved/${user.email}`)
+        .then((res) => {
+          setApprovedApplications(res.data || []);
+        })
+        .catch(() => {
+          toast.error("Failed to load approved applications.");
+        });
     }
-  });
+  }, [user?.email, axiosSecure]);
 
-  // Fetch existing claims by user
-  const { data: claims = [] } = useQuery({
-    queryKey: ['myClaims', user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/claims/${user.email}`);
-      return res.data;
-    }
-  });
-
-  // Check if a claim already exists for a policy
-  const getClaimStatus = (policyId) => {
-    const claim = claims.find((c) => c.policyId === policyId);
-    return claim?.status;
-  };
-
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
-
-  const handleClaimSubmit = async (e, application) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setUploading(true);
+    if (!selectedAppId) {
+      toast.warning("Please select a policy.");
+      return;
+    }
 
-    const form = e.target;
-    const reason = form.reason.value;
+    const selectedApplication = approvedApplications.find(
+      (app) => app._id === selectedAppId
+    );
+
+    const claimData = {
+      applicationId: selectedApplication._id,
+      userEmail: user.email,
+      policyId: selectedApplication.policyId,
+      policyTitle: selectedApplication.policyTitle,
+      details,
+    };
 
     try {
-      // 1. Upload image to imgbb
-      const formData = new FormData();
-      formData.append("image", selectedFile);
-      const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
-      const imgRes = await axiosSecure.post(imageUploadUrl, formData);
-      const imageUrl = imgRes.data.data.url;
-
-      // 2. Post claim to DB
-      const claimData = {
-        userEmail: user.email,
-        policyId: application.policyId,
-        policyTitle: application.policyTitle,
-        reason,
-        imageUrl,
-      };
-
-      await axiosSecure.post("/claims", claimData);
-      Swal.fire("Claim Submitted!", "Your claim is under review.", "success");
-      form.reset();
-      setSelectedFile(null);
-      queryClient.invalidateQueries(["myClaims"]);
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Failed to submit claim", "error");
-    } finally {
-      setUploading(false);
+      const res = await axiosSecure.post("/claims", claimData);
+      if (res.data.insertedId) {
+        toast.success("Claim submitted successfully.");
+        setSelectedAppId("");
+        setDetails("");
+      }
+    } catch (error) {
+      toast.error("Failed to submit claim.");
     }
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">Claim Request</h2>
+    <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow">
+      <h2 className="text-xl font-bold mb-4">Submit a Claim</h2>
 
-      {isLoading ? (
-        <p>Loading approved policies...</p>
-      ) : applications.length === 0 ? (
-        <p>No approved policies available.</p>
+      {approvedApplications.length === 0 ? (
+        <p className="text-gray-500">No approved policies available.</p>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {applications.map((app) => {
-            const claimStatus = getClaimStatus(app.policyId);
-            const claimed = !!claimStatus;
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1 font-medium">Select Policy</label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={selectedAppId}
+              onChange={(e) => setSelectedAppId(e.target.value)}
+              required
+            >
+              <option value="">-- Select an approved policy --</option>
+              {approvedApplications.map((app) => (
+                <option key={app._id} value={app._id}>
+                  {app.policyTitle || "Untitled Policy"}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            return (
-              <div key={app._id} className="border p-4 rounded-xl shadow">
-                <h3 className="text-xl font-bold mb-2">{app.policyTitle}</h3>
-                <p className="mb-2">
-                  <span className="font-medium">Policy ID:</span> {app.policyId}
-                </p>
+          <div>
+            <label className="block mb-1 font-medium">Claim Details</label>
+            <textarea
+              className="w-full border rounded px-3 py-2"
+              rows="4"
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              placeholder="Describe your claim..."
+              required
+            ></textarea>
+          </div>
 
-                <form onSubmit={(e) => handleClaimSubmit(e, app)}>
-                  <label className="block mb-1 font-medium">Reason for Claim</label>
-                  <textarea
-                    name="reason"
-                    required
-                    disabled={claimed}
-                    className="w-full border rounded p-2 mb-2"
-                  ></textarea>
-
-                  <label className="block mb-1 font-medium">Upload Image</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    disabled={claimed}
-                    required={!claimed}
-                    className="mb-3"
-                  />
-
-                  <div className="flex items-center justify-between">
-                    <button
-                      type="submit"
-                      disabled={claimed || uploading}
-                      className={`px-4 py-2 rounded bg-blue-600 text-white ${
-                        claimed || uploading ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      {uploading ? "Submitting..." : "Submit Claim"}
-                    </button>
-
-                    {claimed && (
-                      <span
-                        className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                          claimStatus === "Approved"
-                            ? "bg-green-200 text-green-800"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {claimStatus}
-                      </span>
-                    )}
-                  </div>
-                </form>
-              </div>
-            );
-          })}
-        </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Submit Claim
+          </button>
+        </form>
       )}
     </div>
   );
