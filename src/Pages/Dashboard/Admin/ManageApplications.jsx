@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AppSpinner from "../../../component/AppSpinner";
 import { GrView } from "react-icons/gr";
-
 import {
   Table,
   TableBody,
@@ -18,7 +17,9 @@ import {
 const ManageApplications = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
+  const [selectedAgent, setSelectedAgent] = useState({});
 
+  // Fetch all applications
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["allApplications"],
     queryFn: async () => {
@@ -27,9 +28,21 @@ const ManageApplications = () => {
     },
   });
 
+  // Fetch all agents for dropdown
+  const { data: agents = [] } = useQuery({
+    queryKey: ["agents"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/users/agents");
+      return res.data;
+    },
+  });
+
+  // Mutation to assign agent
   const assignAgentMutation = useMutation({
-    mutationFn: async ({ id }) => {
-      return await axiosSecure.patch(`/applications/${id}/assign-agent`);
+    mutationFn: async ({ id, agentId }) => {
+      return await axiosSecure.patch(`/applications/${id}/assign-agent`, {
+        agentId,
+      });
     },
     onSuccess: () => {
       Swal.fire("Success", "Agent assigned successfully", "success");
@@ -40,6 +53,7 @@ const ManageApplications = () => {
     },
   });
 
+  // Mutation to reject application
   const rejectApplicationMutation = useMutation({
     mutationFn: async ({ id }) => {
       return await axiosSecure.patch(`/applications/${id}/reject`);
@@ -54,14 +68,19 @@ const ManageApplications = () => {
   });
 
   const handleAssignAgent = (id) => {
+    const agentId = selectedAgent[id];
+    if (!agentId) {
+      return Swal.fire("Error", "Please select an agent first", "warning");
+    }
+
     Swal.fire({
-      title: "Assign Agent?",
+      title: "Assign this agent?",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes, assign",
     }).then((result) => {
       if (result.isConfirmed) {
-        assignAgentMutation.mutate({ id });
+        assignAgentMutation.mutate({ id, agentId });
       }
     });
   };
@@ -93,8 +112,8 @@ const ManageApplications = () => {
           <TableHeadCell>Application Date</TableHeadCell>
           <TableHeadCell>Term</TableHeadCell>
           <TableHeadCell>Status</TableHeadCell>
+          <TableHeadCell>Assign Agent</TableHeadCell>
           <TableHeadCell>Actions</TableHeadCell>
-          
         </TableHead>
         <TableBody className="divide-y">
           {applications.map((app) => (
@@ -103,13 +122,15 @@ const ManageApplications = () => {
               <TableCell>{app.email}</TableCell>
               <TableCell>{app.policyTitle || app.policyData?.title}</TableCell>
               <TableCell>৳{app.coverageAmount}</TableCell>
-              <TableCell>{app.createdAt}</TableCell>
+              <TableCell>{new Date(app.createdAt).toLocaleDateString()}</TableCell>
               <TableCell>{app.termLength} years</TableCell>
               <TableCell>
                 <span
                   className={`px-2 py-1 rounded text-white text-xs font-medium ${
                     app.status === "Pending"
                       ? "bg-amber-500"
+                      : app.status === "Assigned"
+                      ? "bg-blue-600"
                       : app.status === "Approved"
                       ? "bg-green-600"
                       : app.status === "Rejected"
@@ -120,27 +141,50 @@ const ManageApplications = () => {
                   {app.status}
                 </span>
               </TableCell>
-              <TableCell className="flex gap-2">
+              <TableCell>
+                {app.status === "Pending" && (
+                  <select
+                    className="border px-1 py-0.5 text-sm rounded"
+                    value={selectedAgent[app._id] || ""}
+                    onChange={(e) =>
+                      setSelectedAgent({
+                        ...selectedAgent,
+                        [app._id]: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select Agent</option>
+                    {agents.map((agent) => (
+                      <option key={agent._id} value={agent._id}>
+                        {agent.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </TableCell>
+              <TableCell className="flex gap-2 flex-wrap">
                 {app.status === "Pending" && (
                   <>
                     <Button
                       size="xs"
                       color="success"
                       onClick={() => handleAssignAgent(app._id)}
+                      isProcessing={assignAgentMutation.isPending}
                     >
-                      Assign Agent
+                      Assign
                     </Button>
                     <Button
                       size="xs"
                       color="failure"
                       onClick={() => handleReject(app._id)}
+                      isProcessing={rejectApplicationMutation.isPending}
                     >
                       Reject
                     </Button>
                   </>
                 )}
                 <Button size="xs" color="gray">
-                  <GrView></GrView>
+                  <GrView />
                 </Button>
               </TableCell>
             </TableRow>
