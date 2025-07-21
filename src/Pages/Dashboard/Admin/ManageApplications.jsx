@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AppSpinner from "../../../component/AppSpinner";
+import { GrView } from "react-icons/gr";
+
 import {
   Table,
   TableBody,
@@ -88,9 +90,11 @@ const ManageApplications = () => {
           <TableHeadCell>Email</TableHeadCell>
           <TableHeadCell>Policy</TableHeadCell>
           <TableHeadCell>Coverage</TableHeadCell>
+          <TableHeadCell>Application Date</TableHeadCell>
           <TableHeadCell>Term</TableHeadCell>
           <TableHeadCell>Status</TableHeadCell>
           <TableHeadCell>Actions</TableHeadCell>
+          
         </TableHead>
         <TableBody className="divide-y">
           {applications.map((app) => (
@@ -99,6 +103,7 @@ const ManageApplications = () => {
               <TableCell>{app.email}</TableCell>
               <TableCell>{app.policyTitle || app.policyData?.title}</TableCell>
               <TableCell>৳{app.coverageAmount}</TableCell>
+              <TableCell>{app.createdAt}</TableCell>
               <TableCell>{app.termLength} years</TableCell>
               <TableCell>
                 <span
@@ -135,7 +140,7 @@ const ManageApplications = () => {
                   </>
                 )}
                 <Button size="xs" color="gray">
-                  View Details
+                  <GrView></GrView>
                 </Button>
               </TableCell>
             </TableRow>

@@ -30,6 +30,8 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
         // save/update user profile in MongoDB databse
         const userInfo = {
+           name: data.name,  // ✅ Add name
+  photoURL: profilePic,  // ✅ Add profile image URL
           email: data.email,
           role: 'customer', //default role
           created_at: new Date().toISOString(),
