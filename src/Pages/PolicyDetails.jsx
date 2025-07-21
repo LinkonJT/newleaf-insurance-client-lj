@@ -40,6 +40,7 @@ const PolicyDetails = () => {
         <div className="text-gray-400"><strong className="text-gray-300">Coverage:</strong> {policy.coverageRange}</div>
         <div className="text-gray-400"><strong className="text-gray-300">Premium Logic:</strong> {policy.premiumCalculationLogic}</div>
         <div className="text-gray-400"><strong className="text-gray-300">Terms:</strong> {policy.termLengthOptions}</div>
+        <div className="text-gray-400"><strong className="text-gray-300">Base Premium Rate:</strong> {policy.basePremiumRate}</div>
       </div>
          <Link to={`/quote/${id}`}>
         <Button className='mx-auto'>
