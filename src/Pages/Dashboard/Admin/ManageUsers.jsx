@@ -12,12 +12,13 @@ import {
   TableRow,
   Button,
 } from "flowbite-react";
+import { toast } from "react-toastify";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], refetch, isLoading } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
       const res = await axiosSecure.get("/users");
@@ -25,31 +26,31 @@ const ManageUsers = () => {
     },
   });
 
-  const updateRoleMutation = useMutation({
-    mutationFn: async ({ id, role }) => {
-      return await axiosSecure.patch(`/users/${id}/role`, { role });
-    },
-    onSuccess: () => {
-      Swal.fire("Success", "User role updated successfully", "success");
-      queryClient.invalidateQueries(["allUsers"]);
-    },
-    onError: () => {
-      Swal.fire("Error", "Failed to update role", "error");
-    },
-  });
+ const { mutateAsync } = useMutation({
+  mutationFn: async ({ endpoint }) => {
+    const res = await axiosSecure.patch(endpoint);
+    return res.data;
+  },
+  onSuccess: () => {
+    toast.success('Role updated successfully!');
+    refetch();
+  },
+});
 
-  const handleRoleChange = (id, newRole) => {
-    Swal.fire({
-      title: `Change role to ${newRole}?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes, change",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        updateRoleMutation.mutate({ id, role: newRole });
-      }
-    });
-  };
+const handleRoleChange = (id, newRole) => {
+  let endpoint = '';
+
+  if (newRole === 'agent') {
+    endpoint = `/users/${id}/promote-agent`;
+  } else if (newRole === 'customer') {
+    endpoint = `/users/${id}/demote-customer`;
+  } else {
+    console.error('Unsupported role:', newRole);
+    return;
+  }
+
+  mutateAsync({ endpoint });
+};
 
   if (isLoading) return <AppSpinner />;
 
@@ -67,32 +68,35 @@ const ManageUsers = () => {
         <TableBody className="divide-y">
           {users.map((user) => (
             <TableRow key={user._id}>
-              <TableCell>{user.displayName || "N/A"}</TableCell>
+              <TableCell>{user.name || "N/A"}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-              <TableCell className="flex gap-2">
-                {user.role === "Customer" && (
-                  <Button
-                    size="xs"
-                    color="success"
-                    className="bg-green-400 text-white"
-                    onClick={() => handleRoleChange(user._id, "Agent")}
-                  >
-                    Promote to Agent
-                  </Button>
-                )}
-                {user.role === "Agent" && (
-                  <Button
-                    size="xs"
-                    color="failure"
-                    className="bg-amber-200"
-                    onClick={() => handleRoleChange(user._id, "Customer")}
-                  >
-                    Demote to Customer
-                  </Button>
-                )}
-              </TableCell>
+              <TableCell>
+  <div className="flex gap-2">
+    {user.role === "customer" && (
+      <Button
+        size="xs"
+        color="success"
+        className="bg-green-400 text-white"
+        onClick={() => handleRoleChange(user._id, "agent")}
+      >
+        Promote to Agent
+      </Button>
+    )}
+    {user.role === "agent" && (
+      <Button
+        size="xs"
+        color="failure"
+        className="bg-amber-200"
+        onClick={() => handleRoleChange(user._id, "customer")}
+      >
+        Demote to Customer
+      </Button>
+    )}
+  </div>
+</TableCell>
+
             </TableRow>
           ))}
         </TableBody>
