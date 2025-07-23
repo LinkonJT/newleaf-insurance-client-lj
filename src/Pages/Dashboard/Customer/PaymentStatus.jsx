@@ -43,7 +43,7 @@ const PaymentStatus = () => {
         </TableHead>
         <TableBody className="divide-y">
           {applications.map((app) => {
-            const isPaid = app.paymentStatus === "Paid";
+            const isPaid = app.payment_status === "Paid";
 
             return (
               <TableRow key={app._id}>
@@ -58,8 +58,8 @@ const PaymentStatus = () => {
                   {app.policyData?.paymentFrequency || "Monthly"}
                 </TableCell>
                 <TableCell>
-                  {app.lastPaidDate
-                    ? new Date(app.lastPaidDate).toLocaleDateString()
+                  {app.paidAt
+                    ? new Date(app.paidAt).toLocaleDateString()
                     : "Due"}
                 </TableCell>
                 <TableCell>
@@ -80,7 +80,7 @@ const PaymentStatus = () => {
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-blue-600 hover:bg-blue-700"
                     } text-white px-2 py-1 rounded`}>
-                    {isPaid ? "Paid" : "Make Payment"}
+                    Make Payment
                   </Button>
                 </TableCell>
               </TableRow>

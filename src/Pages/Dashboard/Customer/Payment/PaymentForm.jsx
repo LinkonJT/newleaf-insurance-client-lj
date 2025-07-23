@@ -12,31 +12,27 @@ const PaymentForm = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { applicationId } = useParams(); // Rename from parcelId to id for clarity
+  const { applicationId } = useParams();
 
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
+  const [amount, setAmount] = useState(""); // User inputs amount
 
-const {
-  isPending,
-  data: application = {},
-  isError,
-  error: queryError,
-} = useQuery({
-  queryKey: ["application", applicationId],
-  queryFn: async () => {
-    const res = await axiosSecure.get(`/applications/${applicationId}`);
-    return res.data; // this must return an OBJECT
-  },
-  enabled: !!applicationId, // only run if id exists
-});
+  // Fetch application info (still used for title and ID)
+  const { isPending, data: applicationInfo = {} } = useQuery({
+    queryKey: ["applications", applicationId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/applications/${applicationId}`);
+      console.log("Fetched app data:", res.data);
+      return res.data;
+    },
+    enabled: !!applicationId,
+  });
 
   if (isPending) {
     return <span className="loading loading-ring loading-xl"></span>;
   }
 
-  console.log("Application:", application);
-  const amount = parseFloat(application.premiumAmount || 0); // Ensure it's a number
-  const amountInCents = Math.round(amount * 100);
+  const amountInCents = Math.round(parseFloat(amount || 0) * 100);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +42,7 @@ const {
     const card = elements.getElement(CardElement);
     if (!card) return;
 
+    // Step 1: Create Stripe Payment Method
     const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card,
@@ -58,7 +55,7 @@ const {
       setError("");
     }
 
-    // Step 2: Create Payment Intent from Backend
+    // Step 2: Create Payment Intent from backend
     const res = await axiosSecure.post("/create-payment-intent", {
       amount: amountInCents,
       applicationId,
@@ -87,8 +84,8 @@ const {
         const paymentData = {
           applicationId,
           email: user.email,
-          amount,
-          policyTitle: application.policyTitle,
+          amount: parseFloat(amount),
+          policyTitle: applicationInfo.policyTitle || "Untitled Policy",
           transactionId,
           paymentMethod: result.paymentIntent.payment_method_types?.[0],
         };
@@ -109,25 +106,34 @@ const {
     }
   };
 
-  
   return (
-    <div>
+    <div className="min-h-screen flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 rounded-xl shadow-md w-full max-w-md mx-auto"
+        className="space-y-4 bg-white p-6 rounded-xl shadow-md w-full max-w-md"
       >
         <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">
-          Pay for:  {application.policyData?.title}
+          Pay for: {applicationInfo.policyTitle || "Test Policy"}
         </h2>
-        <p className="text-center text-gray-600 mb-4">
-          Premium Amount: <strong>৳{amount}</strong>
-        </p>
+
+        <label className="block">
+          <span className="text-gray-700">Enter Premium Amount (৳)</span>
+          <input
+            type="number"
+            min="1"
+            step="0.01"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="input input-bordered w-full mt-1"
+            required
+          />
+        </label>
 
         <CardElement className="p-2 border rounded" />
 
         <button
           type="submit"
-          disabled={!stripe}
+          disabled={!stripe || !amount}
           className="btn btn-primary w-full"
         >
           Pay ৳{amount}
