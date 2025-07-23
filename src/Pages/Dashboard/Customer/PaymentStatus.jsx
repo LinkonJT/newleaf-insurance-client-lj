@@ -28,6 +28,20 @@ const PaymentStatus = () => {
     enabled: !!user?.email,
   });
 
+  const getNextDueDate = (paidAt, frequency = "Monthly") => {
+  const paidDate = new Date(paidAt);
+  const dueDate = new Date(paidDate);
+
+  if (frequency === "Monthly") {
+    dueDate.setMonth(paidDate.getMonth() + 1);
+  } else if (frequency === "Yearly") {
+    dueDate.setFullYear(paidDate.getFullYear() + 1);
+  }
+
+  return dueDate.toLocaleDateString();
+};
+
+
   if (isLoading) return <AppSpinner />;
 
   return (
@@ -58,10 +72,10 @@ const PaymentStatus = () => {
                   {app.policyData?.paymentFrequency || "Monthly"}
                 </TableCell>
                 <TableCell>
-                  {app.paidAt
-                    ? new Date(app.paidAt).toLocaleDateString()
-                    : "Due"}
-                </TableCell>
+  {app.paidAt
+    ? `Due: ${getNextDueDate(app.paidAt, app.policyData?.paymentFrequency)}`
+    : "Due Now"}
+</TableCell>
                 <TableCell>
                   <span
                     className={`px-2 py-1 rounded text-white text-xs font-medium ${
