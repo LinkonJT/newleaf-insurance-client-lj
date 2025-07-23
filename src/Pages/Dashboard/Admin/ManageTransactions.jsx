@@ -20,10 +20,23 @@ const ManageTransactions = () => {
 
   // Format date utility
   const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
+    // Calculate total income from successful transactions
+  const totalIncome = payments
+    .filter((payment) => payment.status === "Success")
+    .reduce((sum, payment) => sum + (payment.amount || 0), 0);
 
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">Manage Transactions</h2>
+
+      {/* 💰 Total Income Summary */}
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+        <h3 className="text-lg font-semibold text-green-800">Total Income</h3>
+        <p className="text-2xl font-bold text-green-400">
+          BDT {totalIncome.toFixed(2)}
+        </p>
+        <p className="text-sm text-green-700">from all policy sales</p>
+      </div>
 
       <div className="overflow-x-auto">
         <Table striped>
@@ -50,7 +63,7 @@ const ManageTransactions = () => {
                   <TableCell>{payment.transactionId}</TableCell>
                   <TableCell>{payment.email}</TableCell>
                   <TableCell>{payment.policyName}</TableCell>
-                  <TableCell>${(payment.amount / 100).toFixed(2)}</TableCell>
+                  <TableCell>৳{(payment.amount).toFixed(2)}</TableCell>
                   <TableCell>{formatDate(payment.paidAt)}</TableCell>
                   <TableCell>
                     <span
