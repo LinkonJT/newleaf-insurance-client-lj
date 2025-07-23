@@ -85,8 +85,8 @@ const DashboardLayout = () => {
                   <SidebarItem icon={HiCurrencyDollar} as={NavLink} to="/dashboard/payment-status">
                     Payment Status
                   </SidebarItem>
-                  <SidebarItem icon={HiCurrencyDollar} as={NavLink} to="/dashboard/payment">
-                    Make Payment
+                  <SidebarItem icon={HiOutlineDocumentText} as={NavLink} to="/dashboard/manage-blogs">
+                    Manage Blogs
                   </SidebarItem>
                   <SidebarItem icon={HiClipboardCheck} as={NavLink} to="/dashboard/claim-request">
                     Claim Request

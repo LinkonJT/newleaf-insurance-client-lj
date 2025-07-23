@@ -25,7 +25,7 @@ import AddPolicy from "../Pages/Dashboard/Admin/AddPolicy";
 
 // Agent Dashboard pages
 import AssignedCustomers from "../Pages/Dashboard/Agent/AssignedCustomers";
-import ManageBlogs from "../Pages/Dashboard/Agent/ManageBlogs";
+import ManageBlogs from "../Pages/Dashboard/Shared/ManageBlogs";
 import PolicyClearance from "../Pages/Dashboard/Agent/PolicyClearance";
 
 // Shared
@@ -75,6 +75,12 @@ export const router = createBrowserRouter([
     children: [
       // Shared
       { path: "profile", element: <Profile /> },
+       {
+        path: "manage-blogs",
+        element: (
+            <ManageBlogs />
+        ),
+      },
 
       // Customer
       {
@@ -160,14 +166,7 @@ export const router = createBrowserRouter([
           </AgentRoute>
         ),
       },
-      {
-        path: "manage-blogs",
-        element: (
-          <AgentRoute>
-            <ManageBlogs />
-          </AgentRoute>
-        ),
-      },
+     
       {
         path: "policy-clearance",
         element: (
