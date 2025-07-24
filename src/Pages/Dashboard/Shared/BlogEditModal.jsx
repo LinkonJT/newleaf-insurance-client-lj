@@ -68,7 +68,7 @@ const { _id, ...rest } = data;
       <Button onClick={() => setOpenModal(true)} color="gray">Edit</Button>
       <Modal show={openModal} dismissible onClose={() => setOpenModal(false)}>
         <ModalHeader>Edit Blog</ModalHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-400">
           <ModalBody className="space-y-4">
             {/* Image Upload */}
             <div>

@@ -8,8 +8,7 @@ import ReadMoreModal from "./Dashboard/Shared/ReadMoreModal";
 const Blogs = () => {
   const axiosPublic = useAxiosPublic();
   const [openBlog, setOpenBlog] = useState(null);
-
-  const { data: blogs = [], isLoading } = useQuery({
+  const { data: blogs = [], isLoading, refetch } = useQuery({
     queryKey: ["all-blogs"],
     queryFn: async () => {
       const res = await axiosPublic.get("/blogs");
@@ -20,6 +19,7 @@ const Blogs = () => {
   const handleReadMore = async (blog) => {
     // Update visit count
     await axiosPublic.patch(`/blogs/${blog._id}/visit`);
+    await refetch(); // Refetch blogs after updating visit count
     setOpenBlog(blog);
   };
 

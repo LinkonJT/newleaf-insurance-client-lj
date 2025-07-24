@@ -85,9 +85,17 @@ const ClaimRequest = () => {
   const onSubmit = (data) => {
     if (!selectedAppId || !imageUrl) return;
 
+    // Find the selected application object
+  const selectedApp = applications.find(app => app._id === selectedAppId);
+
+  if (!selectedApp) return;
+
     const payload = {
       applicationId: selectedAppId,
       userEmail: user.email,
+      userName: user.displayName || "",       // userName from auth or user data
+    policyTitle: selectedApp.policyTitle, 
+    coverageAmount: selectedApp.coverageAmount, // coverage amount
       claimFileUrl: imageUrl,
       reason: data.claimReason,
       status: "Pending",
