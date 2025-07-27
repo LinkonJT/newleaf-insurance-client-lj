@@ -3,6 +3,7 @@ import Testimonials from '../component/Testimonials';
 import HeroSection from '../component/HeroSection';
 import PopularPolicies from '../component/PopularPolicies';
 import LatestBlog from '../component/LatestBlog';
+import Newsletter from '../component/Newsletter';
 
 const Home = () => {
     return (
@@ -11,6 +12,7 @@ const Home = () => {
             <HeroSection></HeroSection>
             <PopularPolicies></PopularPolicies>
             <LatestBlog></LatestBlog>
+            <Newsletter></Newsletter>
             <Testimonials></Testimonials>
 
         </div>
