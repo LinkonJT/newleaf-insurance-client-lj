@@ -14,7 +14,7 @@ const PaymentStatus = () => {
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["approvedApplications", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/applications/${user.email}`);
+      const res = await axiosSecure.get(`/applications/user/${user.email}`);
       return res.data.filter(app => app.status === "Approved");
     },
     enabled: !!user?.email,

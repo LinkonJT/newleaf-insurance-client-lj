@@ -21,7 +21,7 @@ const PaymentForm = () => {
   const { isPending, data: applicationInfo = {} } = useQuery({
     queryKey: ["application", applicationId],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/applications/${applicationId}`);
+      const res = await axiosSecure.get(`/applications/id/${applicationId}`);
       console.log("Fetched app data/ API Response:", res.data);
       return res.data;
     },

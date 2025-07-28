@@ -27,7 +27,7 @@ const [showModal, setShowModal] = useState(false);
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["myApplications", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/applications/${user.email}`);
+      const res = await axiosSecure.get(`/applications/user/${user.email}`);
       return res.data;
     },
     enabled: !!user?.email,
