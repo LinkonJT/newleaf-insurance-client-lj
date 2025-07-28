@@ -10,19 +10,19 @@ const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { applicationId } = useParams();
+  console.log("Application ID from URL:", applicationId);
 
   const [error, setError] = useState("");
-  const [amount, setAmount] = useState(""); // User inputs amount
 
-  // Fetch application info (still used for title and ID)
+  // Fetch application info
   const { isPending, data: applicationInfo = {} } = useQuery({
-    queryKey: ["applications", applicationId],
+    queryKey: ["application", applicationId],
     queryFn: async () => {
       const res = await axiosSecure.get(`/applications/${applicationId}`);
-      console.log("Fetched app data:", res.data);
+      console.log("Fetched app data/ API Response:", res.data);
       return res.data;
     },
     enabled: !!applicationId,
@@ -32,7 +32,8 @@ const PaymentForm = () => {
     return <span className="loading loading-ring loading-xl"></span>;
   }
 
-  const amountInCents = Math.round(parseFloat(amount || 0) * 100);
+  const amount = parseFloat(applicationInfo?.premiumAmount || 0);
+  const amountInCents = Math.round(amount * 100);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,15 +82,15 @@ const PaymentForm = () => {
         const transactionId = result.paymentIntent.id;
 
         // Step 4: Save payment record
-        const paymentData = {
-          applicationId,
-          email: user.email,
-          amount: parseFloat(amount),
-          policyTitle: applicationInfo.policyTitle || "Untitled Policy",
-          transactionId,
-          paymentMethod: result.paymentIntent.payment_method_types?.[0],
-        };
-
+// Inside handleSubmit → paymentData
+const paymentData = {
+  applicationId,
+  email: user.email,
+  amount: amount,
+  policyTitle: applicationInfo.policyTitle || "Untitled Policy",  // ← updated
+  transactionId,
+  paymentMethod: result.paymentIntent.payment_method_types?.[0],
+};
         const paymentRes = await axiosSecure.post("/payments", paymentData);
 
         if (paymentRes.data.insertedId) {
@@ -106,26 +107,26 @@ const PaymentForm = () => {
     }
   };
 
+  if (loading) return <AppSpinner />;
+if (!applicationInfo) return <p>No application data found</p>;
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="space-y-4 bg-white p-6 rounded-xl shadow-md w-full max-w-md"
       >
-        <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">
-          Pay for: {applicationInfo.policyTitle || "Test Policy"}
-        </h2>
+  <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">
+  Pay for: {applicationInfo.policyTitle || "Untitled Policy"}
+</h2>
 
         <label className="block">
-          <span className="text-gray-700">Enter Premium Amount (৳)</span>
+          <span className="text-gray-700">Premium Amount (৳)</span>
           <input
             type="number"
-            min="1"
-            step="0.01"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="input input-bordered w-full mt-1"
-            required
+            readOnly
+            className="input input-bordered w-full mt-1 bg-gray-100"
           />
         </label>
 
@@ -133,7 +134,7 @@ const PaymentForm = () => {
 
         <button
           type="submit"
-          disabled={!stripe || !amount}
+          disabled={!stripe || amount <= 0}
           className="btn btn-primary w-full"
         >
           Pay ৳{amount}

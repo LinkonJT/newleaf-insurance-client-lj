@@ -46,12 +46,15 @@ const handleViewDetails = (app) => {
       <h1 className="font-bold text-black text-center text-2xl my-2">My Policies</h1>
       <Table striped>
         <TableHead>
-          <TableHeadCell>Policy Title</TableHeadCell>
+          <TableRow>
+
+            <TableHeadCell>Policy Title</TableHeadCell>
           <TableHeadCell>Coverage</TableHeadCell>
           <TableHeadCell>Term</TableHeadCell>
           <TableHeadCell>Premium</TableHeadCell>
           <TableHeadCell>Status</TableHeadCell>
           <TableHeadCell>Actions</TableHeadCell>
+          </TableRow>
         </TableHead>
         <TableBody className="divide-y">
           {applications.map((app) => (

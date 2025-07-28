@@ -1,105 +1,78 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableRow,
-} from "flowbite-react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { Button, Table, TableBody, TableCell, TableHead, TableHeadCell, TableRow } from "flowbite-react";
 import { useNavigate } from "react-router";
 import AppSpinner from "../../../component/AppSpinner";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const PaymentStatus = () => {
-  const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["approvedApplications", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/applications/${user.email}`);
-      return res.data.filter((app) => app.status === "Approved");
+      return res.data.filter(app => app.status === "Approved");
     },
     enabled: !!user?.email,
   });
-
-  const getNextDueDate = (paidAt, frequency = "Monthly") => {
-  const paidDate = new Date(paidAt);
-  const dueDate = new Date(paidDate);
-
-  if (frequency === "Monthly") {
-    dueDate.setMonth(paidDate.getMonth() + 1);
-  } else if (frequency === "Yearly") {
-    dueDate.setFullYear(paidDate.getFullYear() + 1);
-  }
-
-  return dueDate.toLocaleDateString();
-};
-
 
   if (isLoading) return <AppSpinner />;
 
   return (
     <div className="overflow-x-auto">
+      <h2 className="text-2xl font-bold text-center my-4 text-black">Payment Status</h2>
       <Table striped>
         <TableHead>
-          <TableHeadCell>Policy Title</TableHeadCell>
+          <TableRow>
+<TableHeadCell>Policy Title</TableHeadCell>
           <TableHeadCell>Premium Amount</TableHeadCell>
-          <TableHeadCell>Payment Frequency</TableHeadCell>
+          <TableHeadCell>Frequency</TableHeadCell>
           <TableHeadCell>Due Date / Last Paid</TableHeadCell>
           <TableHeadCell>Status</TableHeadCell>
           <TableHeadCell>Action</TableHeadCell>
+
+          </TableRow>
+          
         </TableHead>
         <TableBody className="divide-y">
-          {applications.map((app) => {
-            const isPaid = app.payment_status === "Paid";
-
-            return (
-              <TableRow key={app._id}>
-                <TableCell className="font-medium">
-                  {app.policyData?.title || "N/A"}
-                </TableCell>
-                <TableCell>
-                  {/* {app.policyData?.premiumCalculationLogic || "N/A"} */}
-                  ৳{app.premiumAmount || "N/A"}
-                </TableCell>
-                <TableCell>
-                  {app.policyData?.paymentFrequency || "Monthly"}
-                </TableCell>
-                <TableCell>
-  {app.paidAt
-    ? `Due: ${getNextDueDate(app.paidAt, app.policyData?.paymentFrequency)}`
-    : "Due Now"}
-</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded text-white text-xs font-medium ${
-                      isPaid ? "bg-green-500" : "bg-red-500"
-                    }`}>
-                    {isPaid ? "Paid" : "Due"}
-                  </span>
-                </TableCell>
-                <TableCell>
+          {applications.map(app => (
+            <TableRow key={app._id}>
+              <TableCell>{app.policyData?.title || "N/A"}</TableCell>
+              <TableCell>৳{app.premiumAmount || "N/A"}</TableCell>
+              <TableCell>{app.paymentFrequency || "Monthly"}</TableCell>
+              <TableCell>
+                {app.payment_status === "Paid"
+                  ? new Date(app.paidAt).toLocaleDateString()
+                  : "Due Now"}
+              </TableCell>
+              <TableCell>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-semibold ${
+                    app.payment_status === "Paid"
+                      ? "bg-green-500 text-white"
+                      : "bg-red-500 text-white"
+                  }`}
+                >
+                  {app.payment_status || "Due"}
+                </span>
+              </TableCell>
+              <TableCell>
+                {app.payment_status !== "Paid" && (
                   <Button
                     size="xs"
+                    color="blue"
                     onClick={() => navigate(`/dashboard/payment/${app._id}`)}
-                    disabled={isPaid}
-                    className={`${
-                      isPaid
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    } text-white px-2 py-1 rounded`}>
+                  >
                     Make Payment
                   </Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
