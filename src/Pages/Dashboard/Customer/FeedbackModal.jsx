@@ -10,6 +10,13 @@ const FeedbackModal = ({ open, onClose, application }) => {
     coverageAmount,
     premiumAmount,
     status,
+    dob,
+    phone,
+    
+nomineeName,
+relationship,
+    
+termLength,
     rejectionFeedback,
   } = application;
 
@@ -19,10 +26,15 @@ const FeedbackModal = ({ open, onClose, application }) => {
       <ModalBody className="bg-gray-400">
         <div className="space-y-2 text-sm">
           <p><strong>Client Name:</strong> {name}</p>
+          <p><strong>DOB:</strong> {dob}</p>
           <p><strong>Client Email:</strong> {email}</p>
+          <p><strong>Client Phone:</strong> {phone}</p>
           <p><strong>Policy Title:</strong> {policyTitle}</p>
           <p><strong>Coverage:</strong> BDT {coverageAmount}</p>
+          <p><strong>Term Length:</strong> {termLength} years</p>
           <p><strong>Premium:</strong> ৳{premiumAmount} / month</p>
+          <p><strong>Nominee:</strong> {nomineeName}</p>
+          <p><strong>Relationship with nominee:</strong> {relationship}</p>
           <p><strong>Status:</strong> {status}</p>
 
           {status === "Rejected" && (
@@ -31,7 +43,13 @@ const FeedbackModal = ({ open, onClose, application }) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button onClick={onClose}>Close</Button>
+       
+        {application.status === "Approved" && (
+  <Button>
+    Download Policy PDF
+  </Button>
+)}
+ <Button onClick={onClose}>Close</Button>
       </ModalFooter>
     </Modal>
   );

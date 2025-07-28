@@ -43,6 +43,7 @@ const handleViewDetails = (app) => {
 
   return (
     <div className="overflow-x-auto">
+      <h1 className="font-bold text-black text-center text-2xl my-2">My Policies</h1>
       <Table striped>
         <TableHead>
           <TableHeadCell>Policy Title</TableHeadCell>
@@ -88,9 +89,10 @@ const handleViewDetails = (app) => {
                   <ClientReviewModal policyId={app.policyId} policyTitle={app.policy?.title}></ClientReviewModal>
                 </div>
 
-                <Button className="px-2 text-xs py-1 bg-gray-500 text-white rounded hover:bg-gray-600">
-                  Download Policy
-                </Button>
+
+
+
+                
               </TableCell>
             </TableRow>
           ))}
