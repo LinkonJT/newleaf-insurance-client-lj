@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
@@ -13,10 +13,16 @@ import {
 } from "flowbite-react";
 import ClientReviewModal from "../../ClientReviewModal";
 import AppSpinner from "../../../component/AppSpinner";
+import FeedbackModal from "./FeedbackModal";
+
+
+
 
 const MyPolicies = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const [selectedApp, setSelectedApp] = useState(null);
+const [showModal, setShowModal] = useState(false);
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ["myApplications", user?.email],
@@ -26,6 +32,12 @@ const MyPolicies = () => {
     },
     enabled: !!user?.email,
   });
+
+  
+const handleViewDetails = (app) => {
+  setSelectedApp(app);
+  setShowModal(true);
+};
 
   if (isLoading) return <AppSpinner />;
 
@@ -65,9 +77,12 @@ const MyPolicies = () => {
                 </span>
               </TableCell>
               <TableCell className="flex">
-                <Button className="mr-2 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  View Details
-                </Button>
+            <Button
+  className="mr-2 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+  onClick={() => handleViewDetails(app)}
+>
+  View Details
+</Button>
 
                 <div className="mr-2">
                   <ClientReviewModal policyId={app.policyId} policyTitle={app.policy?.title}></ClientReviewModal>
@@ -81,6 +96,13 @@ const MyPolicies = () => {
           ))}
         </TableBody>
       </Table>
+
+      <FeedbackModal
+  open={showModal}
+  onClose={() => setShowModal(false)}
+  application={selectedApp}
+/>
+
     </div>
   );
 };

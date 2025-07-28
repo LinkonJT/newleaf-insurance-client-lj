@@ -136,6 +136,7 @@ const handleSubmitFeedback = (feedback) => {
   if (!selectedAppId || !feedback) return;
   rejectApplicationMutation.mutate({ id: selectedAppId, feedback });
   setShowRejectModal(false);
+  setSelectedAppId(null); 
 };
 
   if (isLoading) return <AppSpinner />;
