@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import AppSpinner from "../../../component/AppSpinner";
+import { MdAssignmentTurnedIn } from "react-icons/md";
 import { GrView } from "react-icons/gr";
 import {
   Table,
@@ -13,11 +14,15 @@ import {
   TableRow,
   Button,
 } from "flowbite-react";
+import RejectModal from "./RejectModal";
 
 const ManageApplications = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
   const [selectedAgent, setSelectedAgent] = useState({});
+
+  const [showRejectModal, setShowRejectModal] = useState(false);
+const [selectedAppId, setSelectedAppId] = useState(null);
 
   // Fetch all applications
   const { data: applications = [], isLoading } = useQuery({
@@ -54,18 +59,32 @@ const ManageApplications = () => {
   });
 
   // Mutation to reject application
-  const rejectApplicationMutation = useMutation({
-    mutationFn: async ({ id }) => {
-      return await axiosSecure.patch(`/applications/${id}/reject`);
-    },
-    onSuccess: () => {
-      Swal.fire("Rejected", "Application rejected", "warning");
-      queryClient.invalidateQueries(["allApplications"]);
-    },
-    onError: () => {
-      Swal.fire("Error", "Failed to reject application", "error");
-    },
-  });
+// const rejectApplicationMutation = useMutation({
+//   mutationFn: async ({ id, feedback }) => {
+//     return await axiosSecure.patch(`/applications/${id}/reject`, { feedback });
+//   },
+//   onSuccess: () => {
+//     Swal.fire("Rejected", "Application rejected with feedback", "warning");
+//     queryClient.invalidateQueries(["allApplications"]);
+//   },
+//   onError: () => {
+//     Swal.fire("Error", "Failed to reject application", "error");
+//   },
+// });
+
+const rejectApplicationMutation = useMutation({
+  mutationFn: async ({ id, feedback }) => {
+    return await axiosSecure.patch(`/applications/${id}/reject`, { feedback });
+  },
+  onSuccess: () => {
+    Swal.fire("Rejected", "Application rejected with feedback", "warning");
+    queryClient.invalidateQueries(["allApplications"]);
+  },
+  onError: () => {
+    Swal.fire("Error", "Failed to reject application", "error");
+  },
+});
+
 
   const handleAssignAgent = (id) => {
     const agentId = selectedAgent[id];
@@ -85,18 +104,39 @@ const ManageApplications = () => {
     });
   };
 
-  const handleReject = (id) => {
-    Swal.fire({
-      title: "Reject this application?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, reject",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        rejectApplicationMutation.mutate({ id });
-      }
-    });
-  };
+  // const handleReject = (id) => {
+  //   Swal.fire({
+  //     title: "Reject this application?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes, reject",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       rejectApplicationMutation.mutate({ id });
+  //     }
+  //   });
+  // };
+
+const handleReject = (id) => {
+  Swal.fire({
+    title: "Reject this application?",
+    text: "Are you sure you want to reject it?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, reject",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      setSelectedAppId(id);
+      setShowRejectModal(true);
+    }
+  });
+};
+
+const handleSubmitFeedback = (feedback) => {
+  if (!selectedAppId || !feedback) return;
+  rejectApplicationMutation.mutate({ id: selectedAppId, feedback });
+  setShowRejectModal(false);
+};
 
   if (isLoading) return <AppSpinner />;
 
@@ -165,32 +205,41 @@ const ManageApplications = () => {
               <TableCell className="flex gap-2 flex-wrap">
                 {app.status === "Pending" && (
                   <>
-                    <Button
+                    <div className="flex justify-center gap-1">
+                      <Button
                       size="xs"
                       color="success"
                       onClick={() => handleAssignAgent(app._id)}
                       isProcessing={assignAgentMutation.isPending}
+                      className="bg-green-600 text-white hover:bg-green-400"
                     >
-                      Assign
+                    <MdAssignmentTurnedIn size={25}></MdAssignmentTurnedIn>
                     </Button>
                     <Button
                       size="xs"
                       color="failure"
                       onClick={() => handleReject(app._id)}
                       isProcessing={rejectApplicationMutation.isPending}
+                      className="bg-red-700 text-white hover:bg-red-600"
                     >
                       Reject
                     </Button>
+                    </div>
                   </>
                 )}
-                <Button size="xs" color="gray">
-                  <GrView />
-                </Button>
+           
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+       {/* Feedback Modal */}
+      <RejectModal
+        open={showRejectModal}
+        onClose={() => setShowRejectModal(false)}
+        onSubmit={handleSubmitFeedback}
+      />
     </div>
   );
 };
