@@ -1,8 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAxiosPublic from "../hooks/useAxiosPublic";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FaArrowLeft, FaArrowRight, FaQuoteLeft } from "react-icons/fa";
+import { Autoplay } from "swiper/modules";
+
+import "swiper/css";
 
 const Testimonials = () => {
   const [reviews, setReviews] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const swiperRef = useRef(null);
   const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
@@ -11,33 +18,72 @@ const Testimonials = () => {
     });
   }, [axiosPublic]);
 
-  return (
-    <section className="my-10 px-4 md:px-8">
-      <h2 className="text-2xl font-bold text-center mb-6">What Our Clients Say</h2>
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-        {reviews.map((review) => (
-          <div key={review._id} className="bg-white shadow-md rounded-lg p-4">
+  const handlePrev = () => {
+    if (swiperRef.current) swiperRef.current.slidePrev();
+  };
 
-            <div>
-               <img
-      src={review.userPhoto || "https://i.ibb.co/DP5R8rdF/Logo-n-Leaf.png"} // fallback avatar
-      alt={review.userName}
-      className="w-10 h-10 rounded-full object-cover mr-3"
-    />
+  const handleNext = () => {
+    if (swiperRef.current) swiperRef.current.slideNext();
+  };
+
+  return (
+    <section className="my-12 px-4 md:px-8">
+      <h2 className="text-3xl font-bold text-center mb-8">What Our Clients Say</h2>
+
+      <Swiper
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+        modules={[Autoplay]}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        slidesPerView={3}
+        spaceBetween={20}
+        centeredSlides={true}
+        loop={true}
+        slideToClickedSlide={true}
+        className="pb-6"
+      >
+        {reviews.map((review, index) => (
+          <SwiperSlide key={review._id}>
+            <div
+              className={`transition-all duration-300 p-6 rounded-xl shadow-lg h-full text-center max-w-sm mx-auto ${
+                index === activeIndex
+                  ? "bg-white scale-100 opacity-100"
+                  : "bg-gray-100 scale-90 opacity-60"
+              }`}
+            >
+              <FaQuoteLeft className="text-2xl text-green-500 mb-4" />
+              <p className="text-gray-700 mb-4">{review.feedback}</p>
+              <div className="flex flex-col items-center gap-2 mt-4">
+                <img
+                  src={review.userPhoto || "https://i.ibb.co/DP5R8rdF/Logo-n-Leaf.png"}
+                  alt={review.userName}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div>
+                  <h4 className="font-semibold">{review.userName}</h4>
+                  <p className="text-sm text-gray-500">{review.policyTitle}</p>
+                  <div className="text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i}>{i < review.rating ? "⭐" : "☆"}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <h3 className="font-semibold text-lg mb-1">{review.userName}</h3>
-            <p className="text-sm text-gray-600 mb-2">{review.policyTitle}</p>
-            <div className="flex mb-2">
-              {[...Array(5)].map((_, i) => (
-                <span key={i}>
-                  {i < review.rating ? "⭐" : "☆"}
-                </span>
-              ))}
-            </div>
-            <p className="text-gray-700 text-sm">{review.feedback}</p>
-          </div>
+          </SwiperSlide>
+        
         ))}
+        
+      </Swiper>
+
+      {/* Navigation Arrows */}
+      <div className="flex justify-center gap-6 mt-2">
+        <button onClick={handlePrev} className="btn btn-sm btn-outline rounded-full">
+          <FaArrowLeft />
+        </button>
+        <button onClick={handleNext} className="btn btn-sm btn-outline rounded-full">
+          <FaArrowRight />
+        </button>
       </div>
     </section>
   );

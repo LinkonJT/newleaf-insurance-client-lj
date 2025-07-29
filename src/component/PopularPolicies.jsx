@@ -43,7 +43,6 @@ const PopularPolicies = () => {
             <div className="text-gray-700 dark:text-gray-300 space-y-1">
               <p><strong>Coverage:</strong> {policy.coverageRange}</p>
               <p><strong>Term:</strong> {policy.termLengthOptions}</p>
-              <p><strong>Popularity:</strong> {policy.popularity} purchases</p>
             </div>
 
             <Link
