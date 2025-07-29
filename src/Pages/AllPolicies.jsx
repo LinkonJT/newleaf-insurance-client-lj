@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import AppSpinner from '../component/AppSpinner';
 import useAxiosPublic from '../hooks/useAxiosPublic';
 import PoliciesCard from './PoliciesCard';
+import { Label, Select } from 'flowbite-react';
 
 const AllPolicies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,38 +62,46 @@ const AllPolicies = () => {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => handleCategoryChange(cat)}
-            className={`px-4 py-1 rounded-full border ${
-              cat === category ? 'bg-blue-600 text-white' : 'bg-gray-200'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+  {/* Flowbite Category Dropdown */}
+  <div className="max-w-xs w-full">
+    <div className="mb-1">
+      <h2 htmlFor="category" className='text-black font-bold'>Select Category</h2>
+    </div>
+    <Select
+      id="category"
+      value={category}
+      onChange={(e) => handleCategoryChange(e.target.value)}
+      required
+    >
+      {categories.map((cat) => (
+        <option key={cat} value={cat}>
+          {cat}
+        </option>
+      ))}
+    </Select>
+  </div>
 
+  {/* Search Form */}
+  <form
+    onSubmit={handleSearchSubmit}
+    className="ml-auto flex flex-wrap items-center gap-2"
+  >
+    <input
+      type="text"
+      placeholder="Search policies..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className="border px-3 py-1 rounded"
+    />
+    <button
+      type="submit"
+      className="px-4 py-1 bg-blue-500 text-white rounded"
+    >
+      🔍 Search
+    </button>
+  </form>
+</div>
 
-        
-
-        {/* Search */}
-        <form onSubmit={handleSearchSubmit} className="ml-auto">
-          <input
-            type="text"
-            placeholder="Search policies..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border px-3 py-1 rounded"
-          />
-       <button
-            type="submit"
-            className="ml-2 px-4 py-1 bg-blue-500 text-white rounded"
-          >
-            🔍 Search
-          </button>
-        </form>
-      </div>
 
       {/* Policies Grid */}
       {isLoading ? (
