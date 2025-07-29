@@ -24,6 +24,11 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const onSubmit = (data) => {
     console.log(data);
 
+      if (!profilePic) {
+    toast.error("Please upload a profile picture before submitting.");
+    return;
+  }
+
     createUser(data.email, data.password)
       .then(async (result) => {
         console.log(result.user);
@@ -61,6 +66,7 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
         toast.error(error.message || 'Registration failed');
       });
   };
+
 
 
   /**Hadle image upload in imbb */
@@ -103,11 +109,18 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
               <div>
         <Label className="mb-2 block" htmlFor="photo">Upload Photo</Label>
-        <FileInput
-        onChange={handleImageUpload}
-          id="photo"
-          
-        />
+     <FileInput
+  id="photo"
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      toast.error("Profile photo is required");
+      return;
+    }
+    handleImageUpload(e);
+  }}
+  helperText="Upload your profile picture"
+/>
         <HelperText className="mt-1 text-xs md:text-sm">
           SVG, PNG, JPG or GIF (MAX. 800x400px).
         </HelperText>

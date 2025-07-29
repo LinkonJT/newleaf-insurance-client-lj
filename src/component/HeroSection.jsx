@@ -1,6 +1,6 @@
 import { Carousel } from "flowbite-react";
 import { Link } from "react-router";
-import img1 from "../assets/img1.png";
+import img1 from "../assets/img1.jpg";
 import img2 from "../assets/img2.png";
 import img3 from "../assets/img3.png";
 

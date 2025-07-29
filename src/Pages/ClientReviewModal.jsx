@@ -22,6 +22,7 @@ const ClientReviewModal = ({ policyId, policyTitle }) => {
     const reviewData = {
       userName: user?.displayName,
       userEmail: user?.email,
+       userPhoto: user?.photoURL,
       policyId,
       policyTitle,
       rating,

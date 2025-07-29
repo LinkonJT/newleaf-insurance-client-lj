@@ -17,6 +17,15 @@ const Testimonials = () => {
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
         {reviews.map((review) => (
           <div key={review._id} className="bg-white shadow-md rounded-lg p-4">
+
+            <div>
+               <img
+      src={review.userPhoto || "https://i.ibb.co/DP5R8rdF/Logo-n-Leaf.png"} // fallback avatar
+      alt={review.userName}
+      className="w-10 h-10 rounded-full object-cover mr-3"
+    />
+            </div>
+            
             <h3 className="font-semibold text-lg mb-1">{review.userName}</h3>
             <p className="text-sm text-gray-600 mb-2">{review.policyTitle}</p>
             <div className="flex mb-2">
