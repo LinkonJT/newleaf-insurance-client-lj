@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
   Footer,
@@ -10,20 +10,25 @@ import {
   FooterLinkGroup,
   FooterTitle,
 } from "flowbite-react";
-import { BsDribbble, BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs";
-import logo from "../../assets/Logo_nLeaf.png"
+import {
+  BsDribbble,
+  BsFacebook,
+  BsGithub,
+  BsInstagram,
+  BsTwitter,
+} from "react-icons/bs";
+import logo from "../../assets/Logo_nLeaf.png";
+import { Link, NavLink } from "react-router";
 
 const AppFooter = () => {
-    return (
+  return (
     <Footer container>
       <div className="w-full">
         <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
-          <div className='rounded-md'>
+          <div className="rounded-md">
             <FooterBrand
-              href="https://flowbite.com"
-
+              href="https://newleaf-insurance.web.app "
               src={logo}
-            
               alt="Flowbite Logo"
               name="NewLeaf"
             />
@@ -32,8 +37,9 @@ const AppFooter = () => {
             <div>
               <FooterTitle title="about" />
               <FooterLinkGroup col>
-                <FooterLink href="#">Flowbite</FooterLink>
-                <FooterLink href="#">Tailwind CSS</FooterLink>
+                <Link to="/about" className="text-white hover:underline">
+                  NewLeaf
+                </Link>
               </FooterLinkGroup>
             </div>
             <div>
@@ -46,8 +52,15 @@ const AppFooter = () => {
             <div>
               <FooterTitle title="Legal" />
               <FooterLinkGroup col>
-                <FooterLink href="#">Privacy Policy</FooterLink>
-                <FooterLink href="#">Terms &amp; Conditions</FooterLink>
+                <Link to="/privacy" className="text-white hover:underline">
+                  Privacy Policy
+                </Link>
+
+                <Link
+                  to="/terms-condition"
+                  className="text-white hover:underline">
+                  Terms Conditions
+                </Link>
               </FooterLinkGroup>
             </div>
           </div>
@@ -65,7 +78,7 @@ const AppFooter = () => {
         </div>
       </div>
     </Footer>
-    );
+  );
 };
 
 export default AppFooter;

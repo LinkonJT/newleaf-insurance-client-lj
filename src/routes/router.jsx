@@ -40,6 +40,10 @@ import PolicyDetails from "../Pages/PolicyDetails";
 import Quote from "../Pages/Quote";
 import ApplyPolicy from "../Pages/ApplyPolicy";
 import Payment from "../Pages/Dashboard/Customer/Payment/Payment";
+import PrivacyPolicy from "../component/Footer/PriPolicy";
+import TermsConditions from "../component/Footer/TermsConditions";
+import About from "../component/Footer/About";
+import PriPolicy from "../component/Footer/PriPolicy";
 
 
 export const router = createBrowserRouter([
@@ -55,6 +59,9 @@ export const router = createBrowserRouter([
       { path: "/forbidden", element: <Forbidden /> },
       {path: '/policy/:id',element: <PolicyDetails></PolicyDetails>},
       {path: "/quote/:id",element: <Quote></Quote>},
+      {path: "/about",element:<About></About> },
+      {path: "/privacy",element: <PriPolicy></PriPolicy>},
+      {path: "/terms-condition",element: <TermsConditions></TermsConditions>},
       {
   path: "/apply/:id",
   element: (

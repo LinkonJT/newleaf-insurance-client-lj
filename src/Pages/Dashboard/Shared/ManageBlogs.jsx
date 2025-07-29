@@ -56,7 +56,7 @@ const ManageBlogs = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Manage Blogs</h2>
+        <h2 className="text-2xl font-bold my-4 text-black">Manage Blogs</h2>
         {(role === "admin" || role === "agent" || role === "customer") && (
           <BlogModal
             mode="add"

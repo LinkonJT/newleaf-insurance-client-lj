@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router';
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from "flowbite-react";
-import { HiUser, HiOutlineClipboardList, HiCurrencyDollar, HiClipboardCheck, HiOutlineDocumentText, HiHome, HiLogout, HiUserGroup, HiOutlineDocumentReport } from "react-icons/hi";
+import { HiUser, HiOutlineClipboardList, HiCurrencyDollar, HiClipboardCheck, HiOutlineDocumentText, HiHome, HiLogout, HiUserGroup, HiOutlineDocumentReport, HiMenu } from "react-icons/hi";
 import useAuth from '../hooks/useAuth';
 
 import AppNavbar from '../component/Shared/AppNavbar';
@@ -12,6 +12,7 @@ import useUserRole from '../hooks/useUserRole';
 const DashboardLayout = () => {
   const { user, logOut } = useAuth();
   const { role, roleLoading } = useUserRole();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -28,9 +29,21 @@ const DashboardLayout = () => {
   }
   return (
     <div className='flex flex-col min-h-screen'>
-      <AppNavbar />
+      {/* <AppNavbar /> */}
+      <div className="relative">
+  <AppNavbar />
+  {/* Sidebar toggle button for mobile */}
+  <button
+    className="md:hidden absolute top-3 left-2 z-20 bg-gray-200 p-2 rounded"
+    onClick={() => setSidebarOpen(!sidebarOpen)}
+  >
+    <HiMenu className="w-6 h-6" />
+  </button>
+</div>
       <div className="flex">
-        <Sidebar className="w-64 min-h-screen">
+        <Sidebar   className={`w-64 min-h-screen z-10 bg-white fixed md:static transition-transform duration-300 ${
+    sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+  } md:translate-x-0`}>
           <SidebarItems>
             <SidebarItemGroup>
               <SidebarItem icon={HiHome} as={NavLink} to="/">
