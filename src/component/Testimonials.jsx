@@ -35,17 +35,28 @@ const Testimonials = () => {
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         modules={[Autoplay]}
         autoplay={{ delay: 4000, disableOnInteraction: false }}
-        slidesPerView={3}
+        // slidesPerView={3}
         spaceBetween={20}
         centeredSlides={true}
         loop={true}
         slideToClickedSlide={true}
         className="pb-6"
+          breakpoints={{
+    0: {
+      slidesPerView: 1,
+    },
+    768: {
+      slidesPerView: 2,
+    },
+    1024: {
+      slidesPerView: 3,
+    },
+  }}
       >
         {reviews.map((review, index) => (
           <SwiperSlide key={review._id}>
             <div
-              className={`transition-all duration-300 p-6 rounded-xl shadow-lg h-full text-center max-w-sm mx-auto ${
+              className={`transition-all duration-300 p-6 rounded-xl shadow-md h-full text-center max-w-sm mx-auto ${
                 index === activeIndex
                   ? "bg-white scale-100 opacity-100"
                   : "bg-gray-100 scale-90 opacity-60"
@@ -71,13 +82,11 @@ const Testimonials = () => {
               </div>
             </div>
           </SwiperSlide>
-        
         ))}
-        
       </Swiper>
 
       {/* Navigation Arrows */}
-      <div className="flex justify-center gap-6 mt-2">
+      <div className="flex justify-center gap-6 mt-6">
         <button onClick={handlePrev} className="btn btn-sm btn-outline rounded-full">
           <FaArrowLeft />
         </button>
