@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../../hooks/useAxiosSecure";
 import useAuth from "../../../../hooks/useAuth";
+import { Button } from "flowbite-react";
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -132,13 +133,13 @@ if (!applicationInfo) return <p>No application data found</p>;
 
         <CardElement className="p-2 border rounded" />
 
-        <button
+        <Button
           type="submit"
           disabled={!stripe || amount <= 0}
-          className="btn btn-primary w-full"
+          className="btn w-full"
         >
           Pay ৳{amount}
-        </button>
+        </Button>
 
         {error && <p className="text-red-600">{error}</p>}
       </form>
