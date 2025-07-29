@@ -13,7 +13,6 @@ import Forbidden from "../Pages/Forbidden";
 // Customer Dashboard pages
 import MyPolicies from "../Pages/Dashboard/Customer/MyPolicies";
 import PaymentStatus from "../Pages/Dashboard/Customer/PaymentStatus";
-import PaymentPage from "../Pages/Dashboard/Customer/PaymentPage";
 import ClaimRequest from "../Pages/Dashboard/Customer/ClaimRequest";
 
 // Admin Dashboard pages
@@ -40,7 +39,6 @@ import PolicyDetails from "../Pages/PolicyDetails";
 import Quote from "../Pages/Quote";
 import ApplyPolicy from "../Pages/ApplyPolicy";
 import Payment from "../Pages/Dashboard/Customer/Payment/Payment";
-import PrivacyPolicy from "../component/Footer/PriPolicy";
 import TermsConditions from "../component/Footer/TermsConditions";
 import About from "../component/Footer/About";
 import PriPolicy from "../component/Footer/PriPolicy";
