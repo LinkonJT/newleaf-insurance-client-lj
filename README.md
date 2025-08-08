@@ -8,6 +8,12 @@ A modern web-based life insurance management platform built with the MERN stack.
 
 ---
 
+
+## 🖼 Screenshot
+
+![Project Screenshot](./public/newLeaf-ss.png)
+
+
 ## 🔐 Test Login Credentials
 
 ### 🛠 Admin

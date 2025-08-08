@@ -60,13 +60,12 @@ export const router = createBrowserRouter([
       {path: "/about",element:<About></About> },
       {path: "/privacy",element: <PriPolicy></PriPolicy>},
       {path: "/terms-condition",element: <TermsConditions></TermsConditions>},
-      {
-  path: "/apply/:id",
-  element: (
-    <PrivateRoute>
-      <ApplyPolicy></ApplyPolicy>
-    </PrivateRoute>
-  ),
+      {path: "/apply/:id",
+                    element: (
+                    <PrivateRoute>
+                         <ApplyPolicy></ApplyPolicy>
+                    </PrivateRoute>
+                      ),
 }
     ],
   },
