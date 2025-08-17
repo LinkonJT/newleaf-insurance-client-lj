@@ -42,6 +42,7 @@ import Payment from "../Pages/Dashboard/Customer/Payment/Payment";
 import TermsConditions from "../component/Footer/TermsConditions";
 import About from "../component/Footer/About";
 import PriPolicy from "../component/Footer/PriPolicy";
+import NavProfile from "../Pages/Dashboard/Shared/NavProfile";
 
 
 export const router = createBrowserRouter([
@@ -66,7 +67,14 @@ export const router = createBrowserRouter([
                          <ApplyPolicy></ApplyPolicy>
                     </PrivateRoute>
                       ),
-}
+},
+  {path: "/navProfile",
+                    element: (
+                    <PrivateRoute>
+                        <NavProfile></NavProfile>
+                    </PrivateRoute>
+                      ),
+},
     ],
   },
   {

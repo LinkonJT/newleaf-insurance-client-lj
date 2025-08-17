@@ -50,7 +50,7 @@ const DashboardLayout = () => {
                 Home
               </SidebarItem>
               <SidebarItem icon={HiUser} as={NavLink} to="/dashboard/profile">
-                Profile
+                Profile (Edit)
               </SidebarItem>
 
               {role === 'admin' && (
