@@ -30,11 +30,12 @@ const DashboardLayout = () => {
   return (
     <div className='flex flex-col min-h-screen'>
       {/* <AppNavbar /> */}
+      <AppNavbar />
       <div className="relative">
-  <AppNavbar />
+  
   {/* Sidebar toggle button for mobile */}
   <button
-    className="md:hidden absolute top-3 left-2 z-20 bg-gray-200 p-2 rounded"
+    className="md:hidden absolute top-0 left-0 mb-5 z-20 bg-gray-200 p-2 rounded"
     onClick={() => setSidebarOpen(!sidebarOpen)}
   >
     <HiMenu className="w-6 h-6" />

@@ -49,10 +49,15 @@ if (loading) {
           )
         }
 
-
-        <NavbarToggle />
+<NavbarToggle />
+      
       </div>
-      <NavbarCollapse>
+
+        
+ 
+      </div>
+
+           <NavbarCollapse className="md:flex md:justify-end">
         <NavLink to='/' className="text-gray-400 hover:text-white">Home</NavLink>
         <NavLink to='/all-policies' className="text-gray-400 hover:text-white">All Policies</NavLink>
         <NavLink to='/blogs' className="text-gray-400 hover:text-white">Blogs</NavLink>
@@ -64,8 +69,7 @@ if (loading) {
     </>
         )}
       
-      </NavbarCollapse>
-      </div>
+      </NavbarCollapse >
     </Navbar>
     );
 };
