@@ -39,7 +39,7 @@ if (loading) {
              <span className="text-sm px-3 py-1 bg-green-200 dark:bg-gray-700 text-green-800 dark:text-gray-200 rounded-full font-medium">
               {user.displayName || user.email}
             </span>
-            <Button className='btn btn-3xl' onClick={handleSignOut}>Sign Out</Button>
+            <Button className='btn btn-3xl hidden md:block' onClick={handleSignOut}>Sign Out</Button>
            </div>
             </>
           ) : (
@@ -52,12 +52,9 @@ if (loading) {
 <NavbarToggle />
       
       </div>
-
-        
- 
-      </div>
-
-           <NavbarCollapse className="md:flex md:justify-end">
+<div className='hidden md:block'>
+  
+                  <NavbarCollapse className="md:flex md:justify-end">
         <NavLink to='/' className="text-gray-400 hover:text-white">Home</NavLink>
         <NavLink to='/all-policies' className="text-gray-400 hover:text-white">All Policies</NavLink>
         <NavLink to='/blogs' className="text-gray-400 hover:text-white">Blogs</NavLink>
@@ -66,10 +63,32 @@ if (loading) {
               <>
       <NavLink to='/dashboard' className="text-gray-400 hover:text-white">Dashboard</NavLink>
       <NavLink to='/navProfile' className="text-gray-400 hover:text-white">Profile</NavLink>
+ 
+   </>
+        )}
+      
+      </NavbarCollapse >
+</div>
+ 
+      </div>
+
+     <div className='block md:hidden '>
+  
+                  <NavbarCollapse className="md:flex md:justify-end">
+        <NavLink to='/' className="text-gray-400 hover:text-white">Home</NavLink>
+        <NavLink to='/all-policies' className="text-gray-400 hover:text-white">All Policies</NavLink>
+        <NavLink to='/blogs' className="text-gray-400 hover:text-white">Blogs</NavLink>
+        <NavLink to='/about' className="text-gray-400 hover:text-white">About</NavLink>
+          {user && (
+              <>
+      <NavLink to='/dashboard' className="text-gray-400 hover:text-white">Dashboard</NavLink>
+      <NavLink to='/navProfile' className="text-gray-400 hover:text-white">Profile</NavLink>
+           <NavLink className='text-gray-400 hover:text-white' onClick={handleSignOut}>Sign Out</NavLink>
     </>
         )}
       
       </NavbarCollapse >
+</div>
     </Navbar>
     );
 };
