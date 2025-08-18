@@ -34,8 +34,8 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="bg-gray-100 py-10 px-4 rounded-lg shadow max-w-xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold text-center mb-4">Subscribe to our Newsletter</h2>
+    <section className="bg-gray-100 py-10 px-2 md:px-4 rounded-lg shadow max-w-xl mx-auto mt:5 md:mt-10">
+      <h2 className="text-xl md:text-2xl font-bold text-center mb-4">Subscribe to our Newsletter</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"

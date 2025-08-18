@@ -13,23 +13,25 @@ const AllPolicies = () => {
   const navigate = useNavigate();
 
   const category = searchParams.get('category') || 'all';
+  const sort = searchParams.get("sort") || "default";
   const page = parseInt(searchParams.get('page')) || 1;
   const limit = 9;
 
-  const { data = {}, isLoading } = useQuery({
-    queryKey: ['policies', category, page, search],
-    queryFn: async () => {
-      const res = await axiosPublic.get(`/policies`, {
-        params: {
-          category: category === 'all' ? undefined : category,
-          page,
-          limit,
-          search: search || undefined,
-        },
-      });
-      return res.data;
-    },
-  });
+ const { data = {}, isLoading } = useQuery({
+  queryKey: ["policies", category, page, search, sort],
+  queryFn: async () => {
+    const res = await axiosPublic.get(`/policies`, {
+      params: {
+        category: category === "all" ? undefined : category,
+        page,
+        limit,
+        search: search || undefined,
+        sort: sort !== "default" ? sort : undefined,
+      },
+    });
+    return res.data;
+  },
+});
 
   const policies = data?.policies || [];
   const total = data?.total || 0;
@@ -80,11 +82,26 @@ const AllPolicies = () => {
       ))}
     </Select>
   </div>
+{/* Sort By Dropdown */}
+  <div className="max-w-xs md:ml-11 w-full">
+    <h2 className="mb-1 text-black  font-bold">Sort By</h2>
+    <Select
+      id="sort"
+      value={sort}
+      onChange={(e) =>
+        setSearchParams({ category, page: 1, search, sort: e.target.value })
+      }
+    >
+      <option value="default">Default (Newest)</option>
+      <option value="asc">Price: Low → High</option>
+      <option value="desc">Price: High → Low</option>
+    </Select>
+  </div>
 
   {/* Search Form */}
   <form
     onSubmit={handleSearchSubmit}
-    className="ml-auto flex flex-wrap items-center gap-2"
+    className="ml-auto flex flex-wrap items-center md:mt-6 gap-2"
   >
     <input
       type="text"

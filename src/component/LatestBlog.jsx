@@ -29,7 +29,7 @@ const LatestBlog = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-6 ">Latest Blog / Articles</h2>
+      <h2 className="text-xl md:text-3xl font-bold text-center mb-6 ">Latest Blog / Articles</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
         {blogs.map((blog) => (

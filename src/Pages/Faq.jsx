@@ -3,8 +3,8 @@ import { Accordion, AccordionContent, AccordionPanel, AccordionTitle, Card } fro
 
 const Faq = () => {
     return (
-    <div className="max-w-10/12 mx-auto my-10">
-           <h2 className="text-3xl font-bold text-center mb-5">Frequently Asked Questions</h2>
+    <div className="md:max-w-10/12 mx-auto my-10">
+           <h2 className="text-xl md:text-3xl font-bold text-center mb-5">Frequently Asked Questions</h2>
          <Card>
          <Accordion collapseAll>
       <AccordionPanel>
