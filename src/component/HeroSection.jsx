@@ -16,7 +16,7 @@ const HeroSection = () => {
               Secure Your Tomorrow Today
             </h2>
             <Link
-              to="/quote"
+              to="/all-policies"
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded text-white font-semibold transition"
             >
               Get a Free Quote
