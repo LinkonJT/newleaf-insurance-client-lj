@@ -1,75 +1,75 @@
+import React from 'react';
+import { Accordion, AccordionContent, AccordionPanel, AccordionTitle, Card } from "flowbite-react";
 
-import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from "flowbite-react";
-
-export function Component() {
-  return (
-    <Accordion>
+const Faq = () => {
+    return (
+    <div className="max-w-10/12 mx-auto my-10">
+           <h2 className="text-3xl font-bold text-center mb-5">Frequently Asked Questions</h2>
+         <Card>
+         <Accordion collapseAll>
       <AccordionPanel>
-        <AccordionTitle>What is Flowbite?</AccordionTitle>
+        <AccordionTitle>What types of insurance policies does NewLeaf offer?</AccordionTitle>
         <AccordionContent>
-          <p className="mb-2 text-gray-500 dark:text-gray-400">
-            Flowbite is an open-source library of interactive components built on top of Tailwind CSS including buttons,
-            dropdowns, modals, navbars, and more.
-          </p>
           <p className="text-gray-500 dark:text-gray-400">
-            Check out this guide to learn how to&nbsp;
-            <a
-              href="https://flowbite.com/docs/getting-started/introduction/"
-              className="text-cyan-600 hover:underline dark:text-cyan-500"
-            >
-              get started&nbsp;
-            </a>
-            and start developing websites even faster with components on top of Tailwind CSS.
+            We offer a wide range of policies including health insurance, life insurance, auto insurance, home insurance, 
+            and travel insurance. Each plan can be customized to meet your personal or family needs.
           </p>
         </AccordionContent>
       </AccordionPanel>
+
       <AccordionPanel>
-        <AccordionTitle>Is there a Figma file available?</AccordionTitle>
+        <AccordionTitle>How do I buy a policy online?</AccordionTitle>
         <AccordionContent>
-          <p className="mb-2 text-gray-500 dark:text-gray-400">
-            Flowbite is first conceptualized and designed using the Figma software so everything you see in the library
-            has a design equivalent in our Figma file.
-          </p>
           <p className="text-gray-500 dark:text-gray-400">
-            Check out the
-            <a href="https://flowbite.com/figma/" className="text-cyan-600 hover:underline dark:text-cyan-500">
-              Figma design system
-            </a>
-            based on the utility classes from Tailwind CSS and components from Flowbite.
+            Simply create an account, browse through our available policies, compare benefits, and choose the one that 
+            fits your needs. You can complete the purchase securely online within minutes.
           </p>
         </AccordionContent>
       </AccordionPanel>
+
       <AccordionPanel>
-        <AccordionTitle>What are the differences between Flowbite and Tailwind UI?</AccordionTitle>
+        <AccordionTitle>Can I manage my policy through the dashboard?</AccordionTitle>
         <AccordionContent>
-          <p className="mb-2 text-gray-500 dark:text-gray-400">
-            The main difference is that the core components from Flowbite are open source under the MIT license, whereas
-            Tailwind UI is a paid product. Another difference is that Flowbite relies on smaller and standalone
-            components, whereas Tailwind UI offers sections of pages.
+          <p className="text-gray-500 dark:text-gray-400">
+            Yes, once logged in, you can access your dashboard to view policy details, track claims, update personal 
+            information, and renew your policies without visiting a branch office.
           </p>
-          <p className="mb-2 text-gray-500 dark:text-gray-400">
-            However, we actually recommend using both Flowbite, Flowbite Pro, and even Tailwind UI as there is no
-            technical reason stopping you from using the best of two worlds.
+        </AccordionContent>
+      </AccordionPanel>
+
+      <AccordionPanel>
+        <AccordionTitle>How do I file an insurance claim?</AccordionTitle>
+        <AccordionContent>
+          <p className="text-gray-500 dark:text-gray-400">
+            You can file a claim directly through the dashboard by uploading the necessary documents and filling out 
+            the claim form. Our support team will then review and process your request promptly.
           </p>
-          <p className="mb-2 text-gray-500 dark:text-gray-400">Learn more about these technologies:</p>
-          <ul className="list-disc pl-5 text-gray-500 dark:text-gray-400">
-            <li>
-              <a href="https://flowbite.com/pro/" className="text-cyan-600 hover:underline dark:text-cyan-500">
-                Flowbite Pro
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://tailwindui.com/"
-                rel="nofollow"
-                className="text-cyan-600 hover:underline dark:text-cyan-500"
-              >
-                Tailwind UI
-              </a>
-            </li>
-          </ul>
+        </AccordionContent>
+      </AccordionPanel>
+
+      <AccordionPanel>
+        <AccordionTitle>Is my data safe on NewLeaf?</AccordionTitle>
+        <AccordionContent>
+          <p className="text-gray-500 dark:text-gray-400">
+            Absolutely. We use industry-standard encryption and secure servers to protect your personal and financial 
+            information. Your data privacy and security are our top priorities.
+          </p>
+        </AccordionContent>
+      </AccordionPanel>
+
+      <AccordionPanel>
+        <AccordionTitle>What should I do if I forget my account password?</AccordionTitle>
+        <AccordionContent>
+          <p className="text-gray-500 dark:text-gray-400">
+            On the sign-in page, click “Forgot Password” and follow the instructions to reset it. 
+            You’ll receive a secure password reset link in your registered email.
+          </p>
         </AccordionContent>
       </AccordionPanel>
     </Accordion>
-  );
-}
+     </Card>
+    </div>
+    );
+};
+
+export default Faq;

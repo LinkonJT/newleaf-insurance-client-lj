@@ -5,6 +5,8 @@ import PopularPolicies from '../component/PopularPolicies';
 import LatestBlog from '../component/LatestBlog';
 import Newsletter from '../component/Newsletter';
 import OurAgents from '../component/OurAgents';
+import Faq from './Faq';
+
 
 const Home = () => {
     return (
@@ -15,6 +17,7 @@ const Home = () => {
             <Newsletter></Newsletter>
             <OurAgents></OurAgents>
             <Testimonials></Testimonials>
+          <Faq></Faq>
             
 
         </div>
