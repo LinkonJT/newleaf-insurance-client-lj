@@ -1,33 +1,43 @@
-import React, { useState } from 'react';
-import { Button, Card, Label, TextInput, FileInput, HelperText } from "flowbite-react";
-import { NavLink, useLocation, useNavigate } from 'react-router';
+import React, { useState } from "react";
+import {
+  Button,
+  Card,
+  Label,
+  TextInput,
+  FileInput,
+  HelperText,
+} from "flowbite-react";
+import { NavLink, useLocation, useNavigate } from "react-router";
 
-import { useForm } from 'react-hook-form';
-import useAuth from '../../hooks/useAuth';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import useAxios from '../../hooks/useAxios';
-import SocialLogin from './SocialLogin';
+import { useForm } from "react-hook-form";
+import useAuth from "../../hooks/useAuth";
+import axios from "axios";
+import { toast } from "react-toastify";
+import useAxios from "../../hooks/useAxios";
+import SocialLogin from "./SocialLogin";
 
 const SignUp = () => {
-const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
   const { createUser, updateUserProfile } = useAuth();
   const [profilePic, setProfilePic] = useState("");
- const axiosInstance = useAxios();
+  const axiosInstance = useAxios();
 
-  const location = useLocation()
-      const navigate = useNavigate()
-      const from = location.state?.from || '/'
-
-
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from || "/";
 
   const onSubmit = (data) => {
     console.log(data);
 
-      if (!profilePic) {
-    toast.error("Please upload a profile picture before submitting.");
-    return;
-  }
+    if (!profilePic) {
+      toast.error("Please upload a profile picture before submitting.");
+      return;
+    }
 
     createUser(data.email, data.password)
       .then(async (result) => {
@@ -35,15 +45,15 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
         // save/update user profile in MongoDB databse
         const userInfo = {
-           name: data.name,  // ✅ Add name
-  photoURL: profilePic,  // ✅ Add profile image URL
+          name: data.name, // ✅ Add name
+          photoURL: profilePic, // ✅ Add profile image URL
           email: data.email,
-          role: 'customer', //default role
+          role: "customer", //default role
           created_at: new Date().toISOString(),
           last_log_in: new Date().toISOString(),
-        }
+        };
 
-        const userRes = await axiosInstance.post('/users', userInfo);
+        const userRes = await axiosInstance.post("/users", userInfo);
         console.log(userRes.data);
 
         //update user profile in Firebase
@@ -51,26 +61,24 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
           displayName: data.name,
           photoURL: profilePic,
         };
-          updateUserProfile(userProfile)
+        updateUserProfile(userProfile)
           .then(() => {
-            toast.success('Registered successfully'); 
+            toast.success("Registered successfully");
             navigate(from);
           })
           .catch((error) => {
             console.error(error);
-            toast.error('Failed to update profile');
+            toast.error("Failed to update profile");
           });
       })
       .catch((error) => {
         console.error(error);
-        toast.error(error.message || 'Registration failed');
+        toast.error(error.message || "Registration failed");
       });
   };
 
-
-
   /**Hadle image upload in imbb */
-  const handleImageUpload = async (e) => { 
+  const handleImageUpload = async (e) => {
     const image = e.target.files[0];
 
     console.log("uploaded image details", image);
@@ -87,101 +95,108 @@ const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
   return (
     <Card className="max-w-sm my-2 px-4">
-      <h2 className='font-medium mx-auto text-white underline text-lg'>Sign Up Now!!</h2>
+      <h2 className="font-medium mx-auto text-white underline text-lg">
+        Sign Up Now!!
+      </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         {/* Name */}
         <div>
-       
-        <Label htmlFor="name" value="Your Name">Your Name</Label> 
-        <TextInput
-          id="name"
-          type="text"
-          placeholder="John Doe"
-          {...register("name", { required: true })}
-        />
-        {errors.name && (
-          <p className="text-red-500 text-sm mt-1">Name is required</p>
-        )}
-      </div>
+          <Label htmlFor="name" value="Your Name">
+            Your Name
+          </Label>
+          <TextInput
+            id="name"
+            type="text"
+            placeholder="John Doe"
+            {...register("name", { required: true })}
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">Name is required</p>
+          )}
+        </div>
 
-{/* Photo upload */}
+        {/* Photo upload */}
 
-
-              <div>
-        <Label className="mb-2 block" htmlFor="photo">Upload Photo</Label>
-     <FileInput
-  id="photo"
-  onChange={(e) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      toast.error("Profile photo is required");
-      return;
-    }
-    handleImageUpload(e);
-  }}
-  helperText="Upload your profile picture"
-/>
-        <HelperText className="mt-1 text-xs md:text-sm">
-          SVG, PNG, JPG or GIF (MAX. 800x400px).
-        </HelperText>
-        {errors.photo && (
-          <p className="text-red-500 text-sm mt-1">Photo is required</p>
-        )}
-      </div>
+        <div>
+          <Label className="mb-2 block" htmlFor="photo">
+            Upload Photo
+          </Label>
+          <FileInput
+            id="photo"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) {
+                toast.error("Profile photo is required");
+                return;
+              }
+              handleImageUpload(e);
+            }}
+            helperText="Upload your profile picture"
+          />
+          <HelperText className="mt-1 text-xs md:text-sm">
+            SVG, PNG, JPG or GIF (MAX. 800x400px).
+          </HelperText>
+          {errors.photo && (
+            <p className="text-red-500 text-sm mt-1">Photo is required</p>
+          )}
+        </div>
         {/* Email */}
         <div>
-        <Label className="mb-2 block" htmlFor="email">Your Email</Label>
-        <TextInput
-          id="email"
-          type="email"
-          placeholder="name@example.com"
-          {...register("email", { required: true })}
-        />
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-1">Email is required</p>
-        )}
-      </div>
+          <Label className="mb-2 block" htmlFor="email">
+            Your Email
+          </Label>
+          <TextInput
+            id="email"
+            type="email"
+            placeholder="name@example.com"
+            {...register("email", { required: true })}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">Email is required</p>
+          )}
+        </div>
 
-
-
-       {/* Password */}
-      <div>
-        <Label className="mb-2 block" htmlFor="password">Password</Label>
-        <TextInput
-  id="password"
-  type="password"
-  placeholder="At least 6 characters"
-  {...register("password", {
-    required: "Password is required",
-    minLength: {
-      value: 6,
-      message: "Password must be at least 6 characters",
-    },
-    pattern: {
-      value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
-      message: "Password must include uppercase and lowercase letters",
-    },
-  })}
-/>
-        {errors.password && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.password.message || "Password is required"}
-          </p>
-        )}
-      </div>
+        {/* Password */}
+        <div>
+          <Label className="mb-2 block" htmlFor="password">
+            Password
+          </Label>
+          <TextInput
+            id="password"
+            type="password"
+            placeholder="At least 6 characters"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                message:
+                  "Password must include uppercase and lowercase letters",
+              },
+            })}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message || "Password is required"}
+            </p>
+          )}
+        </div>
 
         {/* Submit Button */}
-        <Button type="submit" className="hover:text-black">Sign Up</Button>
+        <Button type="submit" className="hover:text-black">
+          Sign Up
+        </Button>
 
-            
-     
-            <SocialLogin></SocialLogin>
-               <p className="font-semibold text-center text-gray-200 gap-2">
-                    Already Have An Account?
-                    <NavLink className="text-blue-700 hover:underline ml-2" to="/signin">
-                      SignIn
-                    </NavLink>
-                  </p>
+        <SocialLogin></SocialLogin>
+        <p className="font-semibold text-center text-gray-200 gap-2">
+          Already Have An Account?
+          <NavLink className="text-blue-700 hover:underline ml-2" to="/signin">
+            SignIn
+          </NavLink>
+        </p>
       </form>
     </Card>
   );
